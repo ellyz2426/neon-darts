@@ -1,0 +1,36 @@
+<panel width="0.4" height="0.15" color="#0a0a1a" opacity="0.9" borderRadius="0.015" padding="0.01">
+  <!-- Drill HUD Header -->
+  <panel height="0.03" color="{{drillHeaderColor}}" borderRadius="0.008" padding="0.004" marginBottom="0.005">
+    <text fontSize="0.015" color="#ffffff" fontWeight="bold" textAlign="center">
+      {{drillIcon}} {{drillName}}
+    </text>
+  </panel>
+
+  <!-- Target & Progress -->
+  <panel height="0.035" flexDirection="row" marginBottom="0.005">
+    <panel flex="1" color="#0d0d25" borderRadius="0.006" padding="0.003" marginRight="0.005">
+      <text fontSize="0.011" color="#888888">Target:</text>
+      <text fontSize="0.014" color="#00ffff" fontWeight="bold">{{targetLabel}}</text>
+    </panel>
+    <panel flex="1" color="#0d0d25" borderRadius="0.006" padding="0.003">
+      <text fontSize="0.011" color="#888888">Progress:</text>
+      <text fontSize="0.014" color="#00ffaa" fontWeight="bold">{{hitCount}} / {{requiredHits}}</text>
+    </panel>
+  </panel>
+
+  <!-- Accuracy & Time -->
+  <panel height="0.025" flexDirection="row" marginBottom="0.005">
+    <panel flex="1">
+      <text fontSize="0.012" color="#aaaacc">Accuracy: {{accuracy}}%</text>
+    </panel>
+    <panel flex="1">
+      <text fontSize="0.012" color="{{timeColor}}" textAlign="right">{{timeLabel}}</text>
+    </panel>
+  </panel>
+
+  <!-- Progress Bar -->
+  <panel height="0.02" color="#1a1a3a" borderRadius="0.01">
+    <panel width="{{progressWidth}}" height="0.02" color="#00ffaa" borderRadius="0.01">
+    </panel>
+  </panel>
+</panel>

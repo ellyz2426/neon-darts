@@ -74,6 +74,8 @@ import { ThrowReplaySystem } from './throw-replay';
 import { PowerUpManager } from './power-ups';
 import { TutorialManager } from './tutorial';
 import { SoundVisualizer } from './sound-visualizer';
+import { TrainingDrillManager } from './training-drills';
+import { CommentatorManager } from './commentator';
 
 async function main() {
   const container = document.getElementById('app') as HTMLDivElement;
@@ -170,6 +172,12 @@ async function main() {
 
   // Sound visualizer
   const soundVisualizer = new SoundVisualizer(world.scene as any, boardGroup.position);
+
+  // Training drills
+  const drills = new TrainingDrillManager();
+
+  // Commentator
+  const commentator = new CommentatorManager();
 
   // Combo tracker
   const combo = new ComboTracker();
@@ -287,6 +295,30 @@ async function main() {
 
     // Sound visualizer pulse
     soundVisualizer.hitPulse(result.multiplier);
+
+    // Commentary
+    let commentary: string | null = null;
+    if (result.segment === 25) {
+      commentary = commentator.getComment('throw_bullseye');
+    } else if (result.multiplier === 3) {
+      if (result.segment === 20) {
+        commentary = commentator.getComment('triple_20');
+      } else {
+        commentary = commentator.getComment('throw_triple');
+      }
+    } else if (result.multiplier === 2) {
+      commentary = commentator.getComment('throw_double');
+    } else if (result.total === 0) {
+      commentary = commentator.getComment('throw_miss');
+    }
+
+    // Training drill tracking
+    if (drills.isActive()) {
+      const drillResult = drills.registerThrow(result);
+      if (drillResult.message) {
+        ui.showMessage(drillResult.message, 1.5);
+      }
+    }
 
     // Stop recording throw trajectory
     throwReplay.stopRecording(
@@ -628,6 +660,7 @@ async function main() {
     throwReplay.update(dt);
     powerUps.updateTimeBased(dt);
     soundVisualizer.update(dt);
+    commentator.update(dt);
     ui.update(dt);
 
     // Animate environment elements (gentle rotation)
