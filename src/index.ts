@@ -65,6 +65,13 @@ import { MatchHistoryManager } from './match-history';
 import { ProfileManager } from './profile';
 import { HapticManager } from './haptics';
 import { StreakEffects } from './streak-effects';
+import { DartTrailManager } from './dart-trail';
+import { BoardHitEffects } from './board-hit-effects';
+import { CameraShake } from './camera-shake';
+import { WarmupManager } from './warmup';
+import { ModeLeaderboardManager } from './mode-leaderboard';
+import { ThrowReplaySystem } from './throw-replay';
+import { PowerUpManager } from './power-ups';
 
 async function main() {
   const container = document.getElementById('app') as HTMLDivElement;
@@ -129,6 +136,33 @@ async function main() {
   // Streak visual effects
   const streakEffects = new StreakEffects(world, boardGroup.position);
 
+  // Dart trail effects
+  const dartTrails = new DartTrailManager(world.scene as any);
+
+  // Board hit flash effects
+  const boardHitEffects = new BoardHitEffects(world.scene as any);
+
+  // Camera shake
+  const cameraShake = new CameraShake();
+  const cam = (world as any).camera;
+  if (cam) cameraShake.setCamera(cam);
+
+  // Warm-up system
+  const warmup = new WarmupManager();
+
+  // Per-mode leaderboard
+  const modeLeaderboard = new ModeLeaderboardManager();
+
+  // Throw replay
+  const throwReplay = new ThrowReplaySystem();
+
+  // Power-ups
+  const powerUps = new PowerUpManager();
+  powerUps.setCallbacks(
+    (pu) => ui.showMessage(`${pu.icon} ${pu.name}!`, 2.0),
+    (pu) => ui.showMessage(`${pu.icon} ${pu.name} expired`, 1.5),
+  );
+
   // Combo tracker
   const combo = new ComboTracker();
 
@@ -160,6 +194,8 @@ async function main() {
         const power = chargeDuration / maxCharge;
         dartManager.throwDart(aimX, aimY, power);
         haptics.onThrow(power);
+        dartTrails.startTrail('mouse-throw-' + Date.now(), 0);
+        throwReplay.startRecording();
         isCharging = false;
         ui.showPowerBar(false);
         ui.updatePower(0);
@@ -219,6 +255,41 @@ async function main() {
   dartManager.onDartHit = (result: ScoreResult) => {
     // Track for match history
     ui.trackThrowForStats(result);
+
+    // Board hit flash
+    boardHitEffects.triggerHit(
+      boardGroup.position.x + result.x,
+      boardGroup.position.y + result.y,
+      boardGroup.position.z,
+      result.multiplier,
+      result.segment === 25
+    );
+
+    // Camera shake based on hit type
+    if (result.segment === 25) {
+      cameraShake.shake('bullseye');
+    } else if (result.multiplier === 3) {
+      cameraShake.shake('triple');
+    } else if (result.total > 0) {
+      cameraShake.shake('hit');
+    } else {
+      cameraShake.shake('miss');
+    }
+
+    // Stop recording throw trajectory
+    throwReplay.stopRecording(
+      new Vector3(boardGroup.position.x + result.x, boardGroup.position.y + result.y, boardGroup.position.z),
+      result.total,
+      result.multiplier,
+      result.segment
+    );
+
+    // Power-up score modification
+    const scoreMultiplier = powerUps.getScoreMultiplier();
+    if (scoreMultiplier > 1 && result.total > 0) {
+      result.total = Math.round(result.total * scoreMultiplier);
+    }
+    powerUps.onThrow();
 
     // Haptic feedback
     if (result.total > 0) {
@@ -299,6 +370,7 @@ async function main() {
     if (comboResult) {
       ui.showMessage(comboResult.label, 1.5);
       streakEffects.triggerStreak(comboResult.count || 1);
+      powerUps.onComboReached(comboResult.count || 1);
     }
 
     // Streak effect on triples and bullseyes
@@ -365,9 +437,13 @@ async function main() {
           ui.showPanel('gameover');
           audio.playGameOver(won);
           haptics.onGameOver(won);
+          cameraShake.shake('gameWin');
           stats.recordGame(game.mode, won);
           achievements.checkAll(game, null);
           saveToLeaderboard(game);
+          // Per-mode leaderboard
+          const modeScore = parseInt(game.getPlayerDisplay(0)) || game.turnScore;
+          modeLeaderboard.addScore(game.mode, ui.profileManager.nickname, modeScore);
         } else if (game.isAITurn()) {
           ui.showTurnAnnouncement();
           setTimeout(() => performAITurn(), 1800);
@@ -534,6 +610,11 @@ async function main() {
     aimCursor.update(dt);
     particles.update(dt);
     streakEffects.update(dt);
+    dartTrails.update(dt);
+    boardHitEffects.update(dt);
+    cameraShake.update(dt);
+    throwReplay.update(dt);
+    powerUps.updateTimeBased(dt);
     ui.update(dt);
 
     // Animate environment elements (gentle rotation)

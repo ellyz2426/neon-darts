@@ -1,0 +1,42 @@
+<panel width="0.55" height="0.35" color="#0a0a1a" opacity="0.95" borderRadius="0.02" padding="0.02">
+  <!-- Warm-up Header -->
+  <panel height="0.05" color="#003344" borderRadius="0.01" padding="0.005" marginBottom="0.015">
+    <text fontSize="0.022" color="#00ffff" fontWeight="bold" textAlign="center">
+      🎯 WARM-UP THROWS
+    </text>
+  </panel>
+
+  <!-- Instructions -->
+  <panel height="0.04" color="transparent" marginBottom="0.01">
+    <text fontSize="0.016" color="#88aacc" textAlign="center">
+      Take {{throwsRemaining}} practice throw{{throwsPlural}} to find your range
+    </text>
+  </panel>
+
+  <!-- Throw Results -->
+  <panel height="0.12" color="#0d0d25" borderRadius="0.01" padding="0.01" marginBottom="0.015">
+    <text fontSize="0.014" color="#66ffaa" fontWeight="bold" marginBottom="0.005">
+      Throws:
+    </text>
+    <text fontSize="0.018" color="#ffffff" textAlign="center" marginBottom="0.003">
+      {{throwResults}}
+    </text>
+    <text fontSize="0.014" color="#aaaacc" textAlign="center">
+      Average: {{averageScore}}
+    </text>
+  </panel>
+
+  <!-- Throws Remaining Indicator -->
+  <panel width="0.5" height="0.03" color="#1a1a3a" borderRadius="0.015" marginBottom="0.015">
+    <panel width="{{progressWidth}}" height="0.03" color="#00ffaa" borderRadius="0.015">
+    </panel>
+  </panel>
+
+  <!-- Skip Button -->
+  <panel height="0.04" color="#333355" borderRadius="0.01" padding="0.005"
+         event:click="skipWarmup">
+    <text fontSize="0.016" color="#ffaa00" textAlign="center" fontWeight="bold">
+      ⏩ SKIP WARM-UP
+    </text>
+  </panel>
+</panel>

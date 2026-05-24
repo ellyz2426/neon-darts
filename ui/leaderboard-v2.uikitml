@@ -1,0 +1,146 @@
+<panel width="0.65" height="0.55" color="#0a0a1a" opacity="0.95" borderRadius="0.02" padding="0.02">
+  <!-- Leaderboard Header -->
+  <panel height="0.05" color="#003344" borderRadius="0.01" padding="0.005" marginBottom="0.01">
+    <text fontSize="0.024" color="#00ffff" fontWeight="bold" textAlign="center">
+      🏆 LEADERBOARDS
+    </text>
+  </panel>
+
+  <!-- Mode Tabs -->
+  <panel height="0.04" flexDirection="row" marginBottom="0.01">
+    <panel flex="1" color="{{globalTabColor}}" borderRadius="0.008" padding="0.003"
+           event:click="showGlobal" marginRight="0.005">
+      <text fontSize="0.012" color="#ffffff" textAlign="center" fontWeight="bold">ALL</text>
+    </panel>
+    <panel flex="1" color="{{tab501Color}}" borderRadius="0.008" padding="0.003"
+           event:click="show501" marginRight="0.005">
+      <text fontSize="0.012" color="#ffffff" textAlign="center">501</text>
+    </panel>
+    <panel flex="1" color="{{tabCricketColor}}" borderRadius="0.008" padding="0.003"
+           event:click="showCricket" marginRight="0.005">
+      <text fontSize="0.012" color="#ffffff" textAlign="center">CKT</text>
+    </panel>
+    <panel flex="1" color="{{tabKillerColor}}" borderRadius="0.008" padding="0.003"
+           event:click="showKiller" marginRight="0.005">
+      <text fontSize="0.012" color="#ffffff" textAlign="center">KLR</text>
+    </panel>
+    <panel flex="1" color="{{tabTourneyColor}}" borderRadius="0.008" padding="0.003"
+           event:click="showTourney">
+      <text fontSize="0.012" color="#ffffff" textAlign="center">TRN</text>
+    </panel>
+  </panel>
+
+  <!-- Column Headers -->
+  <panel height="0.03" flexDirection="row" color="#1a1a3a" borderRadius="0.005" padding="0.003" marginBottom="0.005">
+    <panel width="0.06">
+      <text fontSize="0.011" color="#888888" fontWeight="bold">#</text>
+    </panel>
+    <panel flex="1">
+      <text fontSize="0.011" color="#888888" fontWeight="bold">PLAYER</text>
+    </panel>
+    <panel width="0.1">
+      <text fontSize="0.011" color="#888888" fontWeight="bold" textAlign="right">SCORE</text>
+    </panel>
+    <panel width="0.1">
+      <text fontSize="0.011" color="#888888" fontWeight="bold" textAlign="right">MODE</text>
+    </panel>
+    <panel width="0.1">
+      <text fontSize="0.011" color="#888888" fontWeight="bold" textAlign="right">DATE</text>
+    </panel>
+  </panel>
+
+  <!-- Leaderboard Entries (scrollable) -->
+  <panel flex="1" color="#0d0d25" borderRadius="0.01" padding="0.005" overflow="scroll">
+    <!-- Entry 1 -->
+    <panel height="0.028" flexDirection="row" color="{{row1Color}}" borderRadius="0.004" padding="0.002" marginBottom="0.002">
+      <panel width="0.06"><text fontSize="0.013" color="{{rank1Color}}" fontWeight="bold">{{rank1}}</text></panel>
+      <panel flex="1"><text fontSize="0.013" color="#ffffff">{{name1}}</text></panel>
+      <panel width="0.1"><text fontSize="0.013" color="#00ffaa" textAlign="right" fontWeight="bold">{{score1}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#aaaacc" textAlign="right">{{mode1}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#888888" textAlign="right">{{date1}}</text></panel>
+    </panel>
+    <!-- Entry 2 -->
+    <panel height="0.028" flexDirection="row" color="{{row2Color}}" borderRadius="0.004" padding="0.002" marginBottom="0.002">
+      <panel width="0.06"><text fontSize="0.013" color="{{rank2Color}}" fontWeight="bold">{{rank2}}</text></panel>
+      <panel flex="1"><text fontSize="0.013" color="#ffffff">{{name2}}</text></panel>
+      <panel width="0.1"><text fontSize="0.013" color="#00ffaa" textAlign="right" fontWeight="bold">{{score2}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#aaaacc" textAlign="right">{{mode2}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#888888" textAlign="right">{{date2}}</text></panel>
+    </panel>
+    <!-- Entry 3 -->
+    <panel height="0.028" flexDirection="row" color="{{row3Color}}" borderRadius="0.004" padding="0.002" marginBottom="0.002">
+      <panel width="0.06"><text fontSize="0.013" color="{{rank3Color}}" fontWeight="bold">{{rank3}}</text></panel>
+      <panel flex="1"><text fontSize="0.013" color="#ffffff">{{name3}}</text></panel>
+      <panel width="0.1"><text fontSize="0.013" color="#00ffaa" textAlign="right" fontWeight="bold">{{score3}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#aaaacc" textAlign="right">{{mode3}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#888888" textAlign="right">{{date3}}</text></panel>
+    </panel>
+    <!-- Entry 4 -->
+    <panel height="0.028" flexDirection="row" color="{{row4Color}}" borderRadius="0.004" padding="0.002" marginBottom="0.002">
+      <panel width="0.06"><text fontSize="0.013" color="{{rank4Color}}" fontWeight="bold">{{rank4}}</text></panel>
+      <panel flex="1"><text fontSize="0.013" color="#ffffff">{{name4}}</text></panel>
+      <panel width="0.1"><text fontSize="0.013" color="#00ffaa" textAlign="right" fontWeight="bold">{{score4}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#aaaacc" textAlign="right">{{mode4}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#888888" textAlign="right">{{date4}}</text></panel>
+    </panel>
+    <!-- Entry 5 -->
+    <panel height="0.028" flexDirection="row" color="{{row5Color}}" borderRadius="0.004" padding="0.002" marginBottom="0.002">
+      <panel width="0.06"><text fontSize="0.013" color="{{rank5Color}}" fontWeight="bold">{{rank5}}</text></panel>
+      <panel flex="1"><text fontSize="0.013" color="#ffffff">{{name5}}</text></panel>
+      <panel width="0.1"><text fontSize="0.013" color="#00ffaa" textAlign="right" fontWeight="bold">{{score5}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#aaaacc" textAlign="right">{{mode5}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#888888" textAlign="right">{{date5}}</text></panel>
+    </panel>
+    <!-- Entry 6-10 -->
+    <panel height="0.028" flexDirection="row" color="{{row6Color}}" borderRadius="0.004" padding="0.002" marginBottom="0.002">
+      <panel width="0.06"><text fontSize="0.013" color="#888888">{{rank6}}</text></panel>
+      <panel flex="1"><text fontSize="0.013" color="#cccccc">{{name6}}</text></panel>
+      <panel width="0.1"><text fontSize="0.013" color="#00cc88" textAlign="right">{{score6}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#888888" textAlign="right">{{mode6}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#666666" textAlign="right">{{date6}}</text></panel>
+    </panel>
+    <panel height="0.028" flexDirection="row" color="{{row7Color}}" borderRadius="0.004" padding="0.002" marginBottom="0.002">
+      <panel width="0.06"><text fontSize="0.013" color="#888888">{{rank7}}</text></panel>
+      <panel flex="1"><text fontSize="0.013" color="#cccccc">{{name7}}</text></panel>
+      <panel width="0.1"><text fontSize="0.013" color="#00cc88" textAlign="right">{{score7}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#888888" textAlign="right">{{mode7}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#666666" textAlign="right">{{date7}}</text></panel>
+    </panel>
+    <panel height="0.028" flexDirection="row" color="{{row8Color}}" borderRadius="0.004" padding="0.002" marginBottom="0.002">
+      <panel width="0.06"><text fontSize="0.013" color="#888888">{{rank8}}</text></panel>
+      <panel flex="1"><text fontSize="0.013" color="#cccccc">{{name8}}</text></panel>
+      <panel width="0.1"><text fontSize="0.013" color="#00cc88" textAlign="right">{{score8}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#888888" textAlign="right">{{mode8}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#666666" textAlign="right">{{date8}}</text></panel>
+    </panel>
+    <panel height="0.028" flexDirection="row" color="{{row9Color}}" borderRadius="0.004" padding="0.002" marginBottom="0.002">
+      <panel width="0.06"><text fontSize="0.013" color="#888888">{{rank9}}</text></panel>
+      <panel flex="1"><text fontSize="0.013" color="#cccccc">{{name9}}</text></panel>
+      <panel width="0.1"><text fontSize="0.013" color="#00cc88" textAlign="right">{{score9}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#888888" textAlign="right">{{mode9}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#666666" textAlign="right">{{date9}}</text></panel>
+    </panel>
+    <panel height="0.028" flexDirection="row" color="{{row10Color}}" borderRadius="0.004" padding="0.002" marginBottom="0.002">
+      <panel width="0.06"><text fontSize="0.013" color="#888888">{{rank10}}</text></panel>
+      <panel flex="1"><text fontSize="0.013" color="#cccccc">{{name10}}</text></panel>
+      <panel width="0.1"><text fontSize="0.013" color="#00cc88" textAlign="right">{{score10}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#888888" textAlign="right">{{mode10}}</text></panel>
+      <panel width="0.1"><text fontSize="0.011" color="#666666" textAlign="right">{{date10}}</text></panel>
+    </panel>
+  </panel>
+
+  <!-- Personal Best -->
+  <panel height="0.035" color="#1a0033" borderRadius="0.008" padding="0.005" marginTop="0.01" marginBottom="0.01">
+    <text fontSize="0.014" color="#ffaa00" textAlign="center" fontWeight="bold">
+      ⭐ Your Best: {{personalBest}} | Rank: #{{personalRank}}
+    </text>
+  </panel>
+
+  <!-- Back Button -->
+  <panel height="0.04" color="#333355" borderRadius="0.01" padding="0.005"
+         event:click="closeLeaderboard">
+    <text fontSize="0.016" color="#ffffff" textAlign="center" fontWeight="bold">
+      ← BACK
+    </text>
+  </panel>
+</panel>

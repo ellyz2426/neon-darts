@@ -1,0 +1,28 @@
+<panel width="0.35" height="0.12" color="#0a0a1a" opacity="0.9" borderRadius="0.015" padding="0.01">
+  <!-- Power-Up Banner -->
+  <panel height="0.03" color="{{powerUpBgColor}}" borderRadius="0.008" padding="0.004" marginBottom="0.005">
+    <text fontSize="0.016" color="#ffffff" fontWeight="bold" textAlign="center">
+      {{powerUpIcon}} {{powerUpName}}
+    </text>
+  </panel>
+
+  <!-- Description -->
+  <panel height="0.025" color="transparent" marginBottom="0.005">
+    <text fontSize="0.012" color="#aaaacc" textAlign="center">
+      {{powerUpDesc}}
+    </text>
+  </panel>
+
+  <!-- Remaining -->
+  <panel height="0.025" color="#1a1a3a" borderRadius="0.008" padding="0.003">
+    <panel width="{{remainingWidth}}" height="0.025" color="{{powerUpBarColor}}" borderRadius="0.008">
+    </panel>
+  </panel>
+
+  <!-- Active count -->
+  <panel height="0.02" color="transparent" marginTop="0.003">
+    <text fontSize="0.01" color="#666688" textAlign="center">
+      {{activeLabel}}
+    </text>
+  </panel>
+</panel>
