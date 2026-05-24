@@ -10,7 +10,7 @@
       </text>
     </panel>
     <panel width="0.03" event:click="dismissNotif" padding="0.002">
-      <text fontSize="0.012" color="#888888" textAlign="center">✕</text>
+      <text fontSize="0.012" color="#888888" textAlign="center">X</text>
     </panel>
   </panel>
 

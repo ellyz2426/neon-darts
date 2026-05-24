@@ -91,7 +91,7 @@ export class KillerManager {
           action = `${player.name} hit ${target.name}! (${target.lives} lives left)`;
         }
       } else {
-        action = result.total > 0 ? `${result.total} — no effect` : 'Miss!';
+        action = result.total > 0 ? `${result.total} - no effect` : 'Miss!';
       }
     } else if (player.isKiller && result.segment === player.targetNumber && result.multiplier !== 2) {
       // Hitting your own number (non-double) as a killer — lose a life!
@@ -101,10 +101,10 @@ export class KillerManager {
         player.isKiller = false;
         action = `${player.name} hit own number and is OUT!`;
       } else {
-        action = `${player.name} hit own number — lost a life! (${player.lives})`;
+        action = `${player.name} hit own number - lost a life! (${player.lives})`;
       }
     } else {
-      action = result.total > 0 ? `${result.total} — no effect` : 'Miss!';
+      action = result.total > 0 ? `${result.total} - no effect` : 'Miss!';
     }
 
     this.lastAction = action;
@@ -147,7 +147,7 @@ export class KillerManager {
   getStatusText(): string {
     return this.players.map(p => {
       if (p.eliminated) return `${p.name}: ☠️ ELIMINATED`;
-      const hearts = '❤️'.repeat(p.lives) + '🖤'.repeat(5 - p.lives);
+      const hearts = '#'.repeat(p.lives) + '.'.repeat(5 - p.lives);
       const label = p.isKiller ? ' [KILLER]' : '';
       return `${p.name} (#${p.targetNumber}): ${hearts}${label}`;
     }).join('\n');

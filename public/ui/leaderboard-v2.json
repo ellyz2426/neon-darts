@@ -11,7 +11,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "🏆 LEADERBOARDS"
+              "LEADERBOARDS"
             ],
             "properties": {
               "fontsize": "0.024",
@@ -1628,7 +1628,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "⭐ Your Best: {{personalBest}} | Rank: #{{personalRank}}"
+              "Your Best: {{personalBest}} | Rank: #{{personalRank}}"
             ],
             "properties": {
               "fontsize": "0.014",
@@ -1657,7 +1657,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "← BACK"
+              "< BACK"
             ],
             "properties": {
               "fontsize": "0.016",

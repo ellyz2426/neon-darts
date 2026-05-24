@@ -2,7 +2,7 @@
   <!-- Tutorial Step Header -->
   <panel height="0.04" color="#004466" borderRadius="0.01" padding="0.005" marginBottom="0.01">
     <text fontSize="0.018" color="#00ffff" fontWeight="bold" textAlign="center">
-      📖 {{stepTitle}}
+      {{stepTitle}}
     </text>
   </panel>
 

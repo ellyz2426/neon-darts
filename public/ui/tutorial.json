@@ -11,7 +11,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "📖 {{stepTitle}}"
+              "{{stepTitle}}"
             ],
             "properties": {
               "fontsize": "0.018",

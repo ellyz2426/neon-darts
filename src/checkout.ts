@@ -180,7 +180,7 @@ export function getCheckoutSuggestion(remaining: number): string | null {
   const routes = CHECKOUT_MAP[remaining] || computeCheckout(remaining);
   if (!routes || routes.length === 0) return null;
   
-  return routes[0].join(' → ');
+  return routes[0].join(' > ');
 }
 
 export function isCheckoutPossible(remaining: number): boolean {

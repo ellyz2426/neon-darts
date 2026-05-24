@@ -104,7 +104,7 @@
       <span class="stat-label">WIN RATE</span>
     </div>
     <div class="stat-box">
-      <span id="hist-favmode" class="stat-value">—</span>
+      <span id="hist-favmode" class="stat-value">-</span>
       <span class="stat-label">FAVORITE</span>
     </div>
   </div>

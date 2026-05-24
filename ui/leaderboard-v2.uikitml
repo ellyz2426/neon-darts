@@ -2,7 +2,7 @@
   <!-- Leaderboard Header -->
   <panel height="0.05" color="#003344" borderRadius="0.01" padding="0.005" marginBottom="0.01">
     <text fontSize="0.024" color="#00ffff" fontWeight="bold" textAlign="center">
-      🏆 LEADERBOARDS
+      LEADERBOARDS
     </text>
   </panel>
 
@@ -132,7 +132,7 @@
   <!-- Personal Best -->
   <panel height="0.035" color="#1a0033" borderRadius="0.008" padding="0.005" marginTop="0.01" marginBottom="0.01">
     <text fontSize="0.014" color="#ffaa00" textAlign="center" fontWeight="bold">
-      ⭐ Your Best: {{personalBest}} | Rank: #{{personalRank}}
+      Your Best: {{personalBest}} | Rank: #{{personalRank}}
     </text>
   </panel>
 
@@ -140,7 +140,7 @@
   <panel height="0.04" color="#333355" borderRadius="0.01" padding="0.005"
          event:click="closeLeaderboard">
     <text fontSize="0.016" color="#ffffff" textAlign="center" fontWeight="bold">
-      ← BACK
+      < BACK
     </text>
   </panel>
 </panel>

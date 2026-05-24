@@ -178,7 +178,7 @@ export class TrainingDrillManager {
           // Consistency drill resets on miss
           if (this.currentDrill.type === 'consistency') {
             this.progress.hits = 0;
-            message += ' — streak reset!';
+            message += ' - streak reset!';
           }
         }
         break;

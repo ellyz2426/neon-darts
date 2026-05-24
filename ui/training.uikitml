@@ -2,7 +2,7 @@
   <!-- Training Header -->
   <panel height="0.05" color="#003344" borderRadius="0.01" padding="0.005" marginBottom="0.01">
     <text fontSize="0.022" color="#00ffff" fontWeight="bold" textAlign="center">
-      🏋️ TRAINING DRILLS
+      TRAINING DRILLS
     </text>
   </panel>
 
@@ -11,91 +11,91 @@
     <!-- Drill 1: Double Trouble -->
     <panel height="0.05" flexDirection="row" color="#1a1a3a" borderRadius="0.008" padding="0.005" marginBottom="0.005"
            event:click="startDrill0">
-      <panel width="0.04"><text fontSize="0.022">🎯</text></panel>
+      <panel width="0.04"><text fontSize="0.022">[1]</text></panel>
       <panel flex="1">
         <text fontSize="0.014" color="#ffffff" fontWeight="bold">Double Trouble</text>
         <text fontSize="0.011" color="#aaaacc">Hit 5 different doubles</text>
       </panel>
       <panel width="0.06" color="#004466" borderRadius="0.006" padding="0.003">
-        <text fontSize="0.012" color="#00ffaa" textAlign="center">GO →</text>
+        <text fontSize="0.012" color="#00ffaa" textAlign="center">GO ></text>
       </panel>
     </panel>
 
     <!-- Drill 2: Triple Threat -->
     <panel height="0.05" flexDirection="row" color="#1a1a3a" borderRadius="0.008" padding="0.005" marginBottom="0.005"
            event:click="startDrill1">
-      <panel width="0.04"><text fontSize="0.022">💥</text></panel>
+      <panel width="0.04"><text fontSize="0.022">[2]</text></panel>
       <panel flex="1">
         <text fontSize="0.014" color="#ffffff" fontWeight="bold">Triple Threat</text>
         <text fontSize="0.011" color="#aaaacc">Hit 3 triple 20s</text>
       </panel>
       <panel width="0.06" color="#004466" borderRadius="0.006" padding="0.003">
-        <text fontSize="0.012" color="#00ffaa" textAlign="center">GO →</text>
+        <text fontSize="0.012" color="#00ffaa" textAlign="center">GO ></text>
       </panel>
     </panel>
 
     <!-- Drill 3: Bull Rush -->
     <panel height="0.05" flexDirection="row" color="#1a1a3a" borderRadius="0.008" padding="0.005" marginBottom="0.005"
            event:click="startDrill2">
-      <panel width="0.04"><text fontSize="0.022">🐂</text></panel>
+      <panel width="0.04"><text fontSize="0.022">[3]</text></panel>
       <panel flex="1">
         <text fontSize="0.014" color="#ffffff" fontWeight="bold">Bull Rush</text>
         <text fontSize="0.011" color="#aaaacc">Hit the bullseye 5 times</text>
       </panel>
       <panel width="0.06" color="#004466" borderRadius="0.006" padding="0.003">
-        <text fontSize="0.012" color="#00ffaa" textAlign="center">GO →</text>
+        <text fontSize="0.012" color="#00ffaa" textAlign="center">GO ></text>
       </panel>
     </panel>
 
     <!-- Drill 4: Checkout Practice -->
     <panel height="0.05" flexDirection="row" color="#1a1a3a" borderRadius="0.008" padding="0.005" marginBottom="0.005"
            event:click="startDrill3">
-      <panel width="0.04"><text fontSize="0.022">🏁</text></panel>
+      <panel width="0.04"><text fontSize="0.022">[4]</text></panel>
       <panel flex="1">
         <text fontSize="0.014" color="#ffffff" fontWeight="bold">Checkout Practice</text>
         <text fontSize="0.011" color="#aaaacc">Finish from 32 (D16)</text>
       </panel>
       <panel width="0.06" color="#004466" borderRadius="0.006" padding="0.003">
-        <text fontSize="0.012" color="#00ffaa" textAlign="center">GO →</text>
+        <text fontSize="0.012" color="#00ffaa" textAlign="center">GO ></text>
       </panel>
     </panel>
 
     <!-- Drill 5: Around the Board -->
     <panel height="0.05" flexDirection="row" color="#1a1a3a" borderRadius="0.008" padding="0.005" marginBottom="0.005"
            event:click="startDrill4">
-      <panel width="0.04"><text fontSize="0.022">🔄</text></panel>
+      <panel width="0.04"><text fontSize="0.022">[5]</text></panel>
       <panel flex="1">
         <text fontSize="0.014" color="#ffffff" fontWeight="bold">Around the Board</text>
         <text fontSize="0.011" color="#aaaacc">Hit segments 1-10 in order</text>
       </panel>
       <panel width="0.06" color="#004466" borderRadius="0.006" padding="0.003">
-        <text fontSize="0.012" color="#00ffaa" textAlign="center">GO →</text>
+        <text fontSize="0.012" color="#00ffaa" textAlign="center">GO ></text>
       </panel>
     </panel>
 
     <!-- Drill 6: Repeat Performance -->
     <panel height="0.05" flexDirection="row" color="#1a1a3a" borderRadius="0.008" padding="0.005" marginBottom="0.005"
            event:click="startDrill5">
-      <panel width="0.04"><text fontSize="0.022">🔁</text></panel>
+      <panel width="0.04"><text fontSize="0.022">[6]</text></panel>
       <panel flex="1">
         <text fontSize="0.014" color="#ffffff" fontWeight="bold">Repeat Performance</text>
         <text fontSize="0.011" color="#aaaacc">Hit T19 five times in a row</text>
       </panel>
       <panel width="0.06" color="#004466" borderRadius="0.006" padding="0.003">
-        <text fontSize="0.012" color="#00ffaa" textAlign="center">GO →</text>
+        <text fontSize="0.012" color="#00ffaa" textAlign="center">GO ></text>
       </panel>
     </panel>
 
     <!-- Drill 7: Speed Round -->
     <panel height="0.05" flexDirection="row" color="#1a1a3a" borderRadius="0.008" padding="0.005"
            event:click="startDrill6">
-      <panel width="0.04"><text fontSize="0.022">⏱️</text></panel>
+      <panel width="0.04"><text fontSize="0.022">[7]</text></panel>
       <panel flex="1">
         <text fontSize="0.014" color="#ffffff" fontWeight="bold">Speed Round</text>
         <text fontSize="0.011" color="#aaaacc">Score 100+ in 30 seconds</text>
       </panel>
       <panel width="0.06" color="#004466" borderRadius="0.006" padding="0.003">
-        <text fontSize="0.012" color="#00ffaa" textAlign="center">GO →</text>
+        <text fontSize="0.012" color="#00ffaa" textAlign="center">GO ></text>
       </panel>
     </panel>
   </panel>
@@ -104,7 +104,7 @@
   <panel height="0.04" color="#333355" borderRadius="0.01" padding="0.005" marginTop="0.01"
          event:click="backFromTraining">
     <text fontSize="0.016" color="#ffffff" textAlign="center" fontWeight="bold">
-      ← BACK
+      < BACK
     </text>
   </panel>
 </panel>

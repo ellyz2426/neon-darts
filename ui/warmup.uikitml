@@ -2,7 +2,7 @@
   <!-- Warm-up Header -->
   <panel height="0.05" color="#003344" borderRadius="0.01" padding="0.005" marginBottom="0.015">
     <text fontSize="0.022" color="#00ffff" fontWeight="bold" textAlign="center">
-      🎯 WARM-UP THROWS
+      WARM-UP THROWS
     </text>
   </panel>
 
@@ -36,7 +36,7 @@
   <panel height="0.04" color="#333355" borderRadius="0.01" padding="0.005"
          event:click="skipWarmup">
     <text fontSize="0.016" color="#ffaa00" textAlign="center" fontWeight="bold">
-      ⏩ SKIP WARM-UP
+      SKIP WARM-UP
     </text>
   </panel>
 </panel>

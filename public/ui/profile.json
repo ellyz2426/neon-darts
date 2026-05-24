@@ -22,7 +22,7 @@
             "sourceTag": "span",
             "type": "custom",
             "children": [
-              "⬡"
+              "*"
             ],
             "properties": {
               "id": "prof-avatar",
@@ -170,7 +170,7 @@
             "sourceTag": "span",
             "type": "custom",
             "children": [
-              "████████░░"
+              "########--"
             ],
             "properties": {
               "id": "prof-sfx-vol",
@@ -229,7 +229,7 @@
             "sourceTag": "span",
             "type": "custom",
             "children": [
-              "████░░░░░░"
+              "####------"
             ],
             "properties": {
               "id": "prof-mus-vol",

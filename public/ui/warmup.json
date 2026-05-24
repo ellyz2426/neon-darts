@@ -11,7 +11,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "🎯 WARM-UP THROWS"
+              "WARM-UP THROWS"
             ],
             "properties": {
               "fontsize": "0.022",
@@ -145,7 +145,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "⏩ SKIP WARM-UP"
+              "SKIP WARM-UP"
             ],
             "properties": {
               "fontsize": "0.016",

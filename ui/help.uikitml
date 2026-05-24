@@ -11,16 +11,16 @@
 </style>
 <div class="panel">
   <span class="title">HOW TO PLAY</span>
-  <span class="section">🖱 Browser Controls</span>
-  <span class="text">Left Click + Hold — Charge throw power</span>
-  <span class="text">Release — Throw dart at aim point</span>
-  <span class="text">Mouse Move — Aim at dartboard</span>
-  <span class="text">ESC — Pause / Resume</span>
-  <span class="section">🎮 VR Controls</span>
-  <span class="text">Right Trigger Hold — Charge throw</span>
-  <span class="text">Release Trigger — Throw dart</span>
-  <span class="text">Point Controller — Aim at board</span>
-  <span class="text">B Button — Pause / Resume</span>
+  <span class="section">[BROWSER] Controls</span>
+  <span class="text">Left Click + Hold - Charge throw power</span>
+  <span class="text">Release - Throw dart at aim point</span>
+  <span class="text">Mouse Move - Aim at dartboard</span>
+  <span class="text">ESC - Pause / Resume</span>
+  <span class="section">[VR] Controls</span>
+  <span class="text">Right Trigger Hold - Charge throw</span>
+  <span class="text">Release Trigger - Throw dart</span>
+  <span class="text">Point Controller - Aim at board</span>
+  <span class="text">B Button - Pause / Resume</span>
   <span class="text">Haptic feedback on hits (toggle in Profile)</span>
   <div class="divider"></div>
   <span class="section">Game Modes</span>

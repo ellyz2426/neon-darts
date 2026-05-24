@@ -18,7 +18,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "🖱 Browser Controls"
+          "[BROWSER] Controls"
         ],
         "properties": {
           "class": "section"
@@ -29,7 +29,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "Left Click + Hold — Charge throw power"
+          "Left Click + Hold - Charge throw power"
         ],
         "properties": {
           "class": "text"
@@ -40,7 +40,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "Release — Throw dart at aim point"
+          "Release - Throw dart at aim point"
         ],
         "properties": {
           "class": "text"
@@ -51,7 +51,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "Mouse Move — Aim at dartboard"
+          "Mouse Move - Aim at dartboard"
         ],
         "properties": {
           "class": "text"
@@ -62,7 +62,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "ESC — Pause / Resume"
+          "ESC - Pause / Resume"
         ],
         "properties": {
           "class": "text"
@@ -73,7 +73,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "🎮 VR Controls"
+          "[VR] Controls"
         ],
         "properties": {
           "class": "section"
@@ -84,7 +84,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "Right Trigger Hold — Charge throw"
+          "Right Trigger Hold - Charge throw"
         ],
         "properties": {
           "class": "text"
@@ -95,7 +95,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "Release Trigger — Throw dart"
+          "Release Trigger - Throw dart"
         ],
         "properties": {
           "class": "text"
@@ -106,7 +106,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "Point Controller — Aim at board"
+          "Point Controller - Aim at board"
         ],
         "properties": {
           "class": "text"
@@ -117,7 +117,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "B Button — Pause / Resume"
+          "B Button - Pause / Resume"
         ],
         "properties": {
           "class": "text"
@@ -639,7 +639,7 @@
       },
       "end": {
         "line": 13,
-        "column": 50
+        "column": 49
       }
     },
     "uid-4": {
@@ -689,7 +689,7 @@
       },
       "end": {
         "line": 18,
-        "column": 45
+        "column": 44
       }
     },
     "uid-9": {

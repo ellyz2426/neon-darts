@@ -59,7 +59,7 @@
                 "sourceTag": "text",
                 "type": "custom",
                 "children": [
-                  "✕"
+                  "X"
                 ],
                 "properties": {
                   "fontsize": "0.012",

@@ -11,7 +11,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "🏋️ TRAINING DRILLS"
+              "TRAINING DRILLS"
             ],
             "properties": {
               "fontsize": "0.022",
@@ -47,7 +47,7 @@
                     "sourceTag": "text",
                     "type": "custom",
                     "children": [
-                      "🎯"
+                      "[1]"
                     ],
                     "properties": {
                       "fontsize": "0.022"
@@ -103,7 +103,7 @@
                     "sourceTag": "text",
                     "type": "custom",
                     "children": [
-                      "GO →"
+                      "GO >"
                     ],
                     "properties": {
                       "fontsize": "0.012",
@@ -145,7 +145,7 @@
                     "sourceTag": "text",
                     "type": "custom",
                     "children": [
-                      "💥"
+                      "[2]"
                     ],
                     "properties": {
                       "fontsize": "0.022"
@@ -201,7 +201,7 @@
                     "sourceTag": "text",
                     "type": "custom",
                     "children": [
-                      "GO →"
+                      "GO >"
                     ],
                     "properties": {
                       "fontsize": "0.012",
@@ -243,7 +243,7 @@
                     "sourceTag": "text",
                     "type": "custom",
                     "children": [
-                      "🐂"
+                      "[3]"
                     ],
                     "properties": {
                       "fontsize": "0.022"
@@ -299,7 +299,7 @@
                     "sourceTag": "text",
                     "type": "custom",
                     "children": [
-                      "GO →"
+                      "GO >"
                     ],
                     "properties": {
                       "fontsize": "0.012",
@@ -341,7 +341,7 @@
                     "sourceTag": "text",
                     "type": "custom",
                     "children": [
-                      "🏁"
+                      "[4]"
                     ],
                     "properties": {
                       "fontsize": "0.022"
@@ -397,7 +397,7 @@
                     "sourceTag": "text",
                     "type": "custom",
                     "children": [
-                      "GO →"
+                      "GO >"
                     ],
                     "properties": {
                       "fontsize": "0.012",
@@ -439,7 +439,7 @@
                     "sourceTag": "text",
                     "type": "custom",
                     "children": [
-                      "🔄"
+                      "[5]"
                     ],
                     "properties": {
                       "fontsize": "0.022"
@@ -495,7 +495,7 @@
                     "sourceTag": "text",
                     "type": "custom",
                     "children": [
-                      "GO →"
+                      "GO >"
                     ],
                     "properties": {
                       "fontsize": "0.012",
@@ -537,7 +537,7 @@
                     "sourceTag": "text",
                     "type": "custom",
                     "children": [
-                      "🔁"
+                      "[6]"
                     ],
                     "properties": {
                       "fontsize": "0.022"
@@ -593,7 +593,7 @@
                     "sourceTag": "text",
                     "type": "custom",
                     "children": [
-                      "GO →"
+                      "GO >"
                     ],
                     "properties": {
                       "fontsize": "0.012",
@@ -635,7 +635,7 @@
                     "sourceTag": "text",
                     "type": "custom",
                     "children": [
-                      "⏱️"
+                      "[7]"
                     ],
                     "properties": {
                       "fontsize": "0.022"
@@ -691,7 +691,7 @@
                     "sourceTag": "text",
                     "type": "custom",
                     "children": [
-                      "GO →"
+                      "GO >"
                     ],
                     "properties": {
                       "fontsize": "0.012",
@@ -738,7 +738,7 @@
             "sourceTag": "text",
             "type": "custom",
             "children": [
-              "← BACK"
+              "< BACK"
             ],
             "properties": {
               "fontsize": "0.016",
@@ -829,7 +829,7 @@
       },
       "end": {
         "line": 13,
-        "column": 66
+        "column": 67
       }
     },
     "uid-7": {
@@ -839,7 +839,7 @@
       },
       "end": {
         "line": 13,
-        "column": 58
+        "column": 59
       }
     },
     "uid-8": {
@@ -909,7 +909,7 @@
       },
       "end": {
         "line": 26,
-        "column": 66
+        "column": 67
       }
     },
     "uid-15": {
@@ -919,7 +919,7 @@
       },
       "end": {
         "line": 26,
-        "column": 58
+        "column": 59
       }
     },
     "uid-16": {
@@ -989,7 +989,7 @@
       },
       "end": {
         "line": 39,
-        "column": 66
+        "column": 67
       }
     },
     "uid-23": {
@@ -999,7 +999,7 @@
       },
       "end": {
         "line": 39,
-        "column": 58
+        "column": 59
       }
     },
     "uid-24": {
@@ -1069,7 +1069,7 @@
       },
       "end": {
         "line": 52,
-        "column": 66
+        "column": 67
       }
     },
     "uid-31": {
@@ -1079,7 +1079,7 @@
       },
       "end": {
         "line": 52,
-        "column": 58
+        "column": 59
       }
     },
     "uid-32": {
@@ -1149,7 +1149,7 @@
       },
       "end": {
         "line": 65,
-        "column": 66
+        "column": 67
       }
     },
     "uid-39": {
@@ -1159,7 +1159,7 @@
       },
       "end": {
         "line": 65,
-        "column": 58
+        "column": 59
       }
     },
     "uid-40": {
@@ -1229,7 +1229,7 @@
       },
       "end": {
         "line": 78,
-        "column": 66
+        "column": 67
       }
     },
     "uid-47": {
@@ -1239,7 +1239,7 @@
       },
       "end": {
         "line": 78,
-        "column": 58
+        "column": 59
       }
     },
     "uid-48": {
@@ -1309,7 +1309,7 @@
       },
       "end": {
         "line": 91,
-        "column": 66
+        "column": 67
       }
     },
     "uid-55": {
@@ -1319,7 +1319,7 @@
       },
       "end": {
         "line": 91,
-        "column": 58
+        "column": 59
       }
     },
     "uid-56": {

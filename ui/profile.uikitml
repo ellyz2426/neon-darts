@@ -99,7 +99,7 @@
 <div class="profile-panel">
   <span class="profile-title">PROFILE</span>
   <div class="profile-avatar">
-    <span id="prof-avatar" class="avatar-display">⬡</span>
+    <span id="prof-avatar" class="avatar-display">*</span>
     <span id="prof-name" class="profile-name">Player 1</span>
   </div>
   <div class="profile-row">
@@ -116,13 +116,13 @@
   <div class="vol-row">
     <span class="vol-label">SFX VOLUME</span>
     <button id="btn-sfx-down" class="vol-btn" cursor="pointer">-</button>
-    <span id="prof-sfx-vol" class="vol-bar">████████░░</span>
+    <span id="prof-sfx-vol" class="vol-bar">########--</span>
     <button id="btn-sfx-up" class="vol-btn" cursor="pointer">+</button>
   </div>
   <div class="vol-row">
     <span class="vol-label">MUSIC VOLUME</span>
     <button id="btn-mus-down" class="vol-btn" cursor="pointer">-</button>
-    <span id="prof-mus-vol" class="vol-bar">████░░░░░░</span>
+    <span id="prof-mus-vol" class="vol-bar">####------</span>
     <button id="btn-mus-up" class="vol-btn" cursor="pointer">+</button>
   </div>
   <div class="profile-row">
