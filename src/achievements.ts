@@ -49,6 +49,22 @@ export class AchievementManager {
     { id: 'profile-custom', name: 'Identity Crisis', description: 'Customize your profile', unlocked: false },
     { id: 'rematch-5', name: 'Rematch King', description: 'Use Quick Rematch 5 times', unlocked: false },
     { id: 'history-10', name: 'Historian', description: 'Play 10 tracked matches', unlocked: false },
+    // Extended v2 achievements
+    { id: 'perfect_round', name: 'Perfect Round', description: 'Score 180 in a single round (T20 × 3)', unlocked: false },
+    { id: 'sniper', name: 'Sniper', description: 'Hit the same segment 3 times in one round', unlocked: false },
+    { id: 'bullseye_streak', name: 'Bulls Eye Streak', description: 'Hit 3 bullseyes in a row', unlocked: false },
+    { id: 'checkout_master', name: 'Checkout Master', description: 'Finish a 501 game with a checkout of 100+', unlocked: false },
+    { id: 'no_miss_game', name: 'Flawless', description: 'Complete a game without missing the board', unlocked: false },
+    { id: 'marathon', name: 'Marathon', description: 'Play 100 total games', unlocked: false },
+    { id: 'thousand_darts', name: 'Thousand Darts', description: 'Throw 1000 total darts', unlocked: false },
+    { id: 'daily_player', name: 'Daily Player', description: 'Complete 7 daily challenges', unlocked: false },
+    { id: 'well_rounded', name: 'Well Rounded', description: 'Play every game mode at least once', unlocked: false },
+    { id: 'skin_collector_v2', name: 'Collector', description: 'Try all 15 dart skins', unlocked: false },
+    { id: 'power_up_user', name: 'Power Player', description: 'Use 10 power-ups total', unlocked: false },
+    { id: 'replay_watcher', name: 'Replay Fan', description: 'Watch 5 instant replays', unlocked: false },
+    { id: 'warm_up_pro', name: 'Warm Up Pro', description: 'Average 60+ in warm-up throws', unlocked: false },
+    { id: 'theme_explorer_v2', name: 'Theme Explorer', description: 'Try all 5 board themes', unlocked: false },
+    { id: 'night_owl', name: 'Night Owl', description: 'Play a game after midnight local time', unlocked: false },
   ];
 
   private stats: StatsTracker;
@@ -123,8 +139,9 @@ export class AchievementManager {
     // Stats-based
     if (s.gamesWon >= 5) this.unlock('five-wins');
     if (s.gamesWon >= 10) this.unlock('ten-wins');
-    if (s.gamesPlayed >= 100) this.unlock('hundred-games');
+    if (s.gamesPlayed >= 100) { this.unlock('hundred-games'); this.unlock('marathon'); }
     if (s.oneEighties > 0) this.unlock('one-eighty');
+    if (s.totalDartsThrown >= 1000) this.unlock('thousand_darts');
 
     // Check all modes won
     if (s.fiveOhOneWins > 0 && s.cricketWins > 0 && s.shanghaiWins > 0 && s.aroundTheClockWins > 0) {
@@ -133,6 +150,16 @@ export class AchievementManager {
 
     // New achievements
     if (s.gamesWon >= 50) this.unlock('fifty-wins');
+
+    // Sniper check: 3 same segment in one round
+    if (game.currentTurnThrows.length === 3) {
+      const segs = game.currentTurnThrows.map(t => t.segment);
+      if (segs[0] === segs[1] && segs[1] === segs[2]) this.unlock('sniper');
+    }
+
+    // Night owl: playing after midnight
+    const hour = new Date().getHours();
+    if (hour >= 0 && hour < 5) this.unlock('night_owl');
   }
 
   // External triggers for new achievements
@@ -146,6 +173,15 @@ export class AchievementManager {
   unlockProfileCustom() { this.unlock('profile-custom'); }
   unlockRematchKing(count: number) { if (count >= 5) this.unlock('rematch-5'); }
   unlockHistorian(count: number) { if (count >= 10) this.unlock('history-10'); }
+  unlockCheckoutMaster() { this.unlock('checkout_master'); }
+  unlockFlawless() { this.unlock('no_miss_game'); }
+  unlockDailyPlayer(count: number) { if (count >= 7) this.unlock('daily_player'); }
+  unlockPowerPlayer() { this.unlock('power_up_user'); }
+  unlockReplayFan() { this.unlock('replay_watcher'); }
+  unlockWarmUpPro() { this.unlock('warm_up_pro'); }
+  unlockBullseyeStreak() { this.unlock('bullseye_streak'); }
+  unlockSkinCollectorV2() { this.unlock('skin_collector_v2'); }
+  unlockThemeExplorerV2() { this.unlock('theme_explorer_v2'); }
 
   getUnlockedCount(): number {
     return this.achievements.filter(a => a.unlocked).length;

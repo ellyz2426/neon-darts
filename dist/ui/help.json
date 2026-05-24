@@ -355,7 +355,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "10 dart skins, 5 board themes (Settings)"
+          "15 dart skins, 5 board themes (Settings)"
         ],
         "properties": {
           "class": "highlight"
@@ -366,7 +366,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "31+ achievements and combo streaks"
+          "50 achievements and combo streaks"
         ],
         "properties": {
           "class": "highlight"
@@ -377,7 +377,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "Match history and player profile"
+          "Power-ups, training drills, throw replay"
         ],
         "properties": {
           "class": "highlight"
@@ -388,7 +388,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "501 checkout calculator and double-out hints"
+          "Match history, player profile, leaderboards"
         ],
         "properties": {
           "class": "highlight"
@@ -399,12 +399,23 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "VS Friend local 2-player mode"
+          "501 checkout calculator and double-out hints"
         ],
         "properties": {
           "class": "highlight"
         },
         "dataUid": "uid-38"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "VS Friend local 2-player mode"
+        ],
+        "properties": {
+          "class": "highlight"
+        },
+        "dataUid": "uid-39"
       },
       {
         "type": "container",
@@ -419,14 +430,14 @@
             "properties": {
               "class": "btn-text"
             },
-            "dataUid": "uid-40"
+            "dataUid": "uid-41"
           }
         ],
         "properties": {
           "id": "btn-back",
           "class": "btn"
         },
-        "dataUid": "uid-39"
+        "dataUid": "uid-40"
       }
     ],
     "properties": {
@@ -607,7 +618,7 @@
         "column": 0
       },
       "end": {
-        "line": 50,
+        "line": 51,
         "column": 6
       }
     },
@@ -948,7 +959,7 @@
       },
       "end": {
         "line": 45,
-        "column": 67
+        "column": 66
       }
     },
     "uid-36": {
@@ -958,7 +969,7 @@
       },
       "end": {
         "line": 46,
-        "column": 65
+        "column": 73
       }
     },
     "uid-37": {
@@ -968,7 +979,7 @@
       },
       "end": {
         "line": 47,
-        "column": 77
+        "column": 76
       }
     },
     "uid-38": {
@@ -978,7 +989,7 @@
       },
       "end": {
         "line": 48,
-        "column": 62
+        "column": 77
       }
     },
     "uid-39": {
@@ -988,16 +999,26 @@
       },
       "end": {
         "line": 49,
-        "column": 73
+        "column": 62
       }
     },
     "uid-40": {
       "start": {
-        "line": 49,
+        "line": 50,
+        "column": 2
+      },
+      "end": {
+        "line": 50,
+        "column": 73
+      }
+    },
+    "uid-41": {
+      "start": {
+        "line": 50,
         "column": 33
       },
       "end": {
-        "line": 49,
+        "line": 50,
         "column": 67
       }
     }

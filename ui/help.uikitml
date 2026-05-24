@@ -42,9 +42,10 @@
   <span class="text">Free throw. No opponent. Track your averages.</span>
   <div class="divider"></div>
   <span class="section">Features</span>
-  <span class="highlight">10 dart skins, 5 board themes (Settings)</span>
-  <span class="highlight">31+ achievements and combo streaks</span>
-  <span class="highlight">Match history and player profile</span>
+  <span class="highlight">15 dart skins, 5 board themes (Settings)</span>
+  <span class="highlight">50 achievements and combo streaks</span>
+  <span class="highlight">Power-ups, training drills, throw replay</span>
+  <span class="highlight">Match history, player profile, leaderboards</span>
   <span class="highlight">501 checkout calculator and double-out hints</span>
   <span class="highlight">VS Friend local 2-player mode</span>
   <div id="btn-back" class="btn"><span class="btn-text">BACK</span></div>
