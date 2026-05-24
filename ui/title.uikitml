@@ -1,0 +1,22 @@
+<style>
+  .panel { display: flex; flex-direction: column; padding-top: 3; padding-bottom: 3; padding-left: 4; padding-right: 4; background-color: rgba(0,0,20,0.92); border-color: #00ffff; border-width: 0.15; border-radius: 1.5; align-items: center; gap: 2; }
+  .title { font-size: 5; color: #00ffff; font-weight: bold; }
+  .subtitle { font-size: 2; color: #888899; }
+  .btn { padding-top: 1; padding-bottom: 1; padding-left: 3; padding-right: 3; background-color: rgba(0,255,255,0.15); border-color: #00ffff; border-width: 0.1; border-radius: 0.8; cursor: pointer; }
+  .btn-text { font-size: 2.2; color: #00ffff; font-weight: bold; }
+  .row { display: flex; flex-direction: row; gap: 2; }
+</style>
+<div class="panel">
+  <span class="title">NEON DARTS</span>
+  <span class="subtitle">VR Precision Darts</span>
+  <div id="btn-play" class="btn"><span class="btn-text">PLAY</span></div>
+  <div class="row">
+    <div id="btn-leaderboard" class="btn"><span class="btn-text">SCORES</span></div>
+    <div id="btn-achievements" class="btn"><span class="btn-text">TROPHIES</span></div>
+  </div>
+  <div class="row">
+    <div id="btn-stats" class="btn"><span class="btn-text">STATS</span></div>
+    <div id="btn-settings" class="btn"><span class="btn-text">SETTINGS</span></div>
+  </div>
+  <div id="btn-help" class="btn"><span class="btn-text">HELP</span></div>
+</div>

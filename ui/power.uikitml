@@ -1,0 +1,9 @@
+<style>
+  .power-bar { display: flex; flex-direction: row; padding-top: 0.5; padding-bottom: 0.5; padding-left: 1; padding-right: 1; background-color: rgba(0,0,20,0.85); border-color: #ffcc00; border-width: 0.08; border-radius: 0.5; align-items: center; gap: 1; }
+  .bar-fill { font-size: 1.5; color: #00ff88; font-weight: bold; }
+  .bar-label { font-size: 1.2; color: #ffcc00; }
+</style>
+<div class="power-bar">
+  <span id="power-fill" class="bar-fill">----------</span>
+  <span id="power-label" class="bar-label">0%</span>
+</div>

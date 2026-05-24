@@ -1,0 +1,21 @@
+<style>
+  .panel { display: flex; flex-direction: column; padding-top: 2; padding-bottom: 2; padding-left: 3; padding-right: 3; background-color: rgba(0,0,20,0.92); border-color: #ffcc00; border-width: 0.15; border-radius: 1.5; align-items: center; gap: 0.8; }
+  .title { font-size: 3; color: #ffcc00; font-weight: bold; }
+  .stat { font-size: 1.4; color: #aaaacc; }
+  .btn { padding-top: 0.8; padding-bottom: 0.8; padding-left: 2; padding-right: 2; background-color: rgba(0,255,255,0.12); border-color: #00ffff; border-width: 0.1; border-radius: 0.8; cursor: pointer; }
+  .btn-text { font-size: 1.8; color: #00ffff; }
+</style>
+<div class="panel">
+  <span class="title">STATISTICS</span>
+  <span id="stat-games" class="stat">Games Played: 0</span>
+  <span id="stat-wins" class="stat">Wins: 0 (0%)</span>
+  <span id="stat-darts" class="stat">Darts Thrown: 0</span>
+  <span id="stat-accuracy" class="stat">Accuracy: 0%</span>
+  <span id="stat-bullseyes" class="stat">Bullseyes: 0</span>
+  <span id="stat-triples" class="stat">Triples: 0</span>
+  <span id="stat-doubles" class="stat">Doubles: 0</span>
+  <span id="stat-180s" class="stat">180s: 0</span>
+  <span id="stat-best-turn" class="stat">Best Turn: 0</span>
+  <span id="stat-avg" class="stat">Avg Turn: 0</span>
+  <div id="btn-back" class="btn"><span class="btn-text">BACK</span></div>
+</div>

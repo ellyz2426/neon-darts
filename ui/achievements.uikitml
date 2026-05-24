@@ -1,0 +1,33 @@
+<style>
+  .panel { display: flex; flex-direction: column; padding-top: 2; padding-bottom: 2; padding-left: 3; padding-right: 3; background-color: rgba(0,0,20,0.92); border-color: #ff00ff; border-width: 0.15; border-radius: 1.5; align-items: center; gap: 0.8; }
+  .title { font-size: 3; color: #ff00ff; font-weight: bold; }
+  .count { font-size: 1.8; color: #ffcc00; }
+  .entry { font-size: 1.2; color: #aaaacc; }
+  .btn { padding-top: 0.8; padding-bottom: 0.8; padding-left: 2; padding-right: 2; background-color: rgba(0,255,255,0.12); border-color: #00ffff; border-width: 0.1; border-radius: 0.8; cursor: pointer; }
+  .btn-text { font-size: 1.8; color: #00ffff; }
+</style>
+<div class="panel">
+  <span class="title">ACHIEVEMENTS</span>
+  <span id="ach-count" class="count">0 / 20</span>
+  <span id="ach-0" class="entry">[ ] ---</span>
+  <span id="ach-1" class="entry">[ ] ---</span>
+  <span id="ach-2" class="entry">[ ] ---</span>
+  <span id="ach-3" class="entry">[ ] ---</span>
+  <span id="ach-4" class="entry">[ ] ---</span>
+  <span id="ach-5" class="entry">[ ] ---</span>
+  <span id="ach-6" class="entry">[ ] ---</span>
+  <span id="ach-7" class="entry">[ ] ---</span>
+  <span id="ach-8" class="entry">[ ] ---</span>
+  <span id="ach-9" class="entry">[ ] ---</span>
+  <span id="ach-10" class="entry">[ ] ---</span>
+  <span id="ach-11" class="entry">[ ] ---</span>
+  <span id="ach-12" class="entry">[ ] ---</span>
+  <span id="ach-13" class="entry">[ ] ---</span>
+  <span id="ach-14" class="entry">[ ] ---</span>
+  <span id="ach-15" class="entry">[ ] ---</span>
+  <span id="ach-16" class="entry">[ ] ---</span>
+  <span id="ach-17" class="entry">[ ] ---</span>
+  <span id="ach-18" class="entry">[ ] ---</span>
+  <span id="ach-19" class="entry">[ ] ---</span>
+  <div id="btn-back" class="btn"><span class="btn-text">BACK</span></div>
+</div>

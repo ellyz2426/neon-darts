@@ -1,0 +1,266 @@
+{
+  "element": {
+    "type": "container",
+    "sourceTag": "div",
+    "children": [
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "501"
+        ],
+        "properties": {
+          "id": "hud-mode",
+          "class": "mode-text"
+        },
+        "dataUid": "uid-2"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "Player 1"
+        ],
+        "properties": {
+          "id": "hud-player",
+          "class": "player-text"
+        },
+        "dataUid": "uid-3"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "501"
+        ],
+        "properties": {
+          "id": "hud-score",
+          "class": "score-text"
+        },
+        "dataUid": "uid-4"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "Round 1"
+        ],
+        "properties": {
+          "id": "hud-round",
+          "class": "info-text"
+        },
+        "dataUid": "uid-5"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "Darts: 3/3"
+        ],
+        "properties": {
+          "id": "hud-darts",
+          "class": "info-text"
+        },
+        "dataUid": "uid-6"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "Turn: 0"
+        ],
+        "properties": {
+          "id": "hud-turn",
+          "class": "turn-text"
+        },
+        "dataUid": "uid-7"
+      }
+    ],
+    "properties": {
+      "class": "hud"
+    },
+    "dataUid": "uid-1"
+  },
+  "classes": {
+    "hud": {
+      "content": {
+        "display": "flex",
+        "flexDirection": "column",
+        "paddingTop": "1",
+        "paddingBottom": "1",
+        "paddingLeft": "2",
+        "paddingRight": "2",
+        "backgroundColor": "rgba(0,0,20,0.85)",
+        "borderColor": "#00ffff",
+        "borderWidth": "0.08",
+        "borderRadius": 0.8,
+        "gap": "0.3"
+      }
+    },
+    "mode-text": {
+      "content": {
+        "fontSize": "1.5",
+        "color": "#ff00ff",
+        "fontWeight": "bold"
+      }
+    },
+    "player-text": {
+      "content": {
+        "fontSize": "2",
+        "color": "#00ffff",
+        "fontWeight": "bold"
+      }
+    },
+    "score-text": {
+      "content": {
+        "fontSize": "2.5",
+        "color": "#ffffff",
+        "fontWeight": "bold"
+      }
+    },
+    "info-text": {
+      "content": {
+        "fontSize": "1.2",
+        "color": "#888899"
+      }
+    },
+    "turn-text": {
+      "content": {
+        "fontSize": "1.3",
+        "color": "#ffcc00"
+      }
+    }
+  },
+  "ranges": {
+    "hud": {
+      "start": {
+        "line": 1,
+        "column": 2
+      },
+      "end": {
+        "line": 1,
+        "column": 6
+      }
+    },
+    "mode-text": {
+      "start": {
+        "line": 2,
+        "column": 2
+      },
+      "end": {
+        "line": 2,
+        "column": 12
+      }
+    },
+    "player-text": {
+      "start": {
+        "line": 3,
+        "column": 2
+      },
+      "end": {
+        "line": 3,
+        "column": 14
+      }
+    },
+    "score-text": {
+      "start": {
+        "line": 4,
+        "column": 2
+      },
+      "end": {
+        "line": 4,
+        "column": 13
+      }
+    },
+    "info-text": {
+      "start": {
+        "line": 5,
+        "column": 2
+      },
+      "end": {
+        "line": 5,
+        "column": 12
+      }
+    },
+    "turn-text": {
+      "start": {
+        "line": 6,
+        "column": 2
+      },
+      "end": {
+        "line": 6,
+        "column": 12
+      }
+    },
+    "uid-1": {
+      "start": {
+        "line": 8,
+        "column": 0
+      },
+      "end": {
+        "line": 15,
+        "column": 6
+      }
+    },
+    "uid-2": {
+      "start": {
+        "line": 9,
+        "column": 2
+      },
+      "end": {
+        "line": 9,
+        "column": 50
+      }
+    },
+    "uid-3": {
+      "start": {
+        "line": 10,
+        "column": 2
+      },
+      "end": {
+        "line": 10,
+        "column": 59
+      }
+    },
+    "uid-4": {
+      "start": {
+        "line": 11,
+        "column": 2
+      },
+      "end": {
+        "line": 11,
+        "column": 52
+      }
+    },
+    "uid-5": {
+      "start": {
+        "line": 12,
+        "column": 2
+      },
+      "end": {
+        "line": 12,
+        "column": 55
+      }
+    },
+    "uid-6": {
+      "start": {
+        "line": 13,
+        "column": 2
+      },
+      "end": {
+        "line": 13,
+        "column": 58
+      }
+    },
+    "uid-7": {
+      "start": {
+        "line": 14,
+        "column": 2
+      },
+      "end": {
+        "line": 14,
+        "column": 54
+      }
+    }
+  }
+}
