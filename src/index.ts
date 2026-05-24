@@ -72,6 +72,8 @@ import { WarmupManager } from './warmup';
 import { ModeLeaderboardManager } from './mode-leaderboard';
 import { ThrowReplaySystem } from './throw-replay';
 import { PowerUpManager } from './power-ups';
+import { TutorialManager } from './tutorial';
+import { SoundVisualizer } from './sound-visualizer';
 
 async function main() {
   const container = document.getElementById('app') as HTMLDivElement;
@@ -163,6 +165,12 @@ async function main() {
     (pu) => ui.showMessage(`${pu.icon} ${pu.name} expired`, 1.5),
   );
 
+  // Tutorial system
+  const tutorial = new TutorialManager();
+
+  // Sound visualizer
+  const soundVisualizer = new SoundVisualizer(world.scene as any, boardGroup.position);
+
   // Combo tracker
   const combo = new ComboTracker();
 
@@ -196,6 +204,7 @@ async function main() {
         haptics.onThrow(power);
         dartTrails.startTrail('mouse-throw-' + Date.now(), 0);
         throwReplay.startRecording();
+        soundVisualizer.pulse(power);
         isCharging = false;
         ui.showPowerBar(false);
         ui.updatePower(0);
@@ -275,6 +284,9 @@ async function main() {
     } else {
       cameraShake.shake('miss');
     }
+
+    // Sound visualizer pulse
+    soundVisualizer.hitPulse(result.multiplier);
 
     // Stop recording throw trajectory
     throwReplay.stopRecording(
@@ -615,6 +627,7 @@ async function main() {
     cameraShake.update(dt);
     throwReplay.update(dt);
     powerUps.updateTimeBased(dt);
+    soundVisualizer.update(dt);
     ui.update(dt);
 
     // Animate environment elements (gentle rotation)
@@ -628,6 +641,7 @@ async function main() {
   // Start with title screen
   game.setState(GameState.Title);
   ui.showPanel('title');
+  soundVisualizer.activate();
 }
 
 main().catch(console.error);

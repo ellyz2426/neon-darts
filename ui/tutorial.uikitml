@@ -1,0 +1,34 @@
+<panel width="0.5" height="0.25" color="#0a0a1a" opacity="0.95" borderRadius="0.02" padding="0.015">
+  <!-- Tutorial Step Header -->
+  <panel height="0.04" color="#004466" borderRadius="0.01" padding="0.005" marginBottom="0.01">
+    <text fontSize="0.018" color="#00ffff" fontWeight="bold" textAlign="center">
+      📖 {{stepTitle}}
+    </text>
+  </panel>
+
+  <!-- Step Message -->
+  <panel height="0.08" color="#0d0d25" borderRadius="0.01" padding="0.01" marginBottom="0.01">
+    <text fontSize="0.014" color="#ffffff" textAlign="center">
+      {{stepMessage}}
+    </text>
+  </panel>
+
+  <!-- Progress Bar -->
+  <panel height="0.025" color="#1a1a3a" borderRadius="0.012" marginBottom="0.01">
+    <panel width="{{progressWidth}}" height="0.025" color="#00ffaa" borderRadius="0.012">
+    </panel>
+  </panel>
+
+  <!-- Step Counter & Skip -->
+  <panel height="0.03" flexDirection="row">
+    <panel flex="1">
+      <text fontSize="0.012" color="#888888">
+        Step {{currentStep}} of {{totalSteps}}
+      </text>
+    </panel>
+    <panel width="0.12" color="#553333" borderRadius="0.008" padding="0.003"
+           event:click="skipTutorial">
+      <text fontSize="0.012" color="#ff8888" textAlign="center">SKIP</text>
+    </panel>
+  </panel>
+</panel>
