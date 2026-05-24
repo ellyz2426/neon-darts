@@ -1,0 +1,143 @@
+<style>
+  .cricket-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 2;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-color: #00ff88;
+    border-width: 0.08;
+    border-radius: 0.8;
+    gap: 0.5;
+  }
+  .cricket-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-bottom: 1;
+    border-bottom-width: 0.05;
+    border-color: #333333;
+  }
+  .cricket-title {
+    font-size: 2;
+    color: #00ff88;
+    font-weight: bold;
+  }
+  .player-label {
+    font-size: 1.5;
+    color: #00ffff;
+    font-weight: bold;
+    min-width: 8;
+    text-align: center;
+  }
+  .player-label-2 {
+    font-size: 1.5;
+    color: #ff00ff;
+    font-weight: bold;
+    min-width: 8;
+    text-align: center;
+  }
+  .cricket-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.3 0;
+  }
+  .segment-label {
+    font-size: 1.8;
+    color: #ffffff;
+    font-weight: bold;
+    min-width: 4;
+    text-align: center;
+  }
+  .marks-cell {
+    font-size: 1.6;
+    color: #00ffff;
+    font-weight: bold;
+    min-width: 8;
+    text-align: center;
+  }
+  .marks-cell-2 {
+    font-size: 1.6;
+    color: #ff00ff;
+    font-weight: bold;
+    min-width: 8;
+    text-align: center;
+  }
+  .points-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 1;
+    border-top-width: 0.05;
+    border-color: #333333;
+  }
+  .points-label {
+    font-size: 1.8;
+    color: #ffcc00;
+    font-weight: bold;
+    min-width: 4;
+    text-align: center;
+  }
+  .points-value {
+    font-size: 1.8;
+    color: #00ffff;
+    font-weight: bold;
+    min-width: 8;
+    text-align: center;
+  }
+  .points-value-2 {
+    font-size: 1.8;
+    color: #ff00ff;
+    font-weight: bold;
+    min-width: 8;
+    text-align: center;
+  }
+</style>
+<div class="cricket-panel">
+  <div class="cricket-header">
+    <span id="cric-p1-name" class="player-label">P1</span>
+    <span class="cricket-title">CRICKET</span>
+    <span id="cric-p2-name" class="player-label-2">P2</span>
+  </div>
+  <div class="cricket-row">
+    <span id="cric-p1-20" class="marks-cell">---</span>
+    <span class="segment-label">20</span>
+    <span id="cric-p2-20" class="marks-cell-2">---</span>
+  </div>
+  <div class="cricket-row">
+    <span id="cric-p1-19" class="marks-cell">---</span>
+    <span class="segment-label">19</span>
+    <span id="cric-p2-19" class="marks-cell-2">---</span>
+  </div>
+  <div class="cricket-row">
+    <span id="cric-p1-18" class="marks-cell">---</span>
+    <span class="segment-label">18</span>
+    <span id="cric-p2-18" class="marks-cell-2">---</span>
+  </div>
+  <div class="cricket-row">
+    <span id="cric-p1-17" class="marks-cell">---</span>
+    <span class="segment-label">17</span>
+    <span id="cric-p2-17" class="marks-cell-2">---</span>
+  </div>
+  <div class="cricket-row">
+    <span id="cric-p1-16" class="marks-cell">---</span>
+    <span class="segment-label">16</span>
+    <span id="cric-p2-16" class="marks-cell-2">---</span>
+  </div>
+  <div class="cricket-row">
+    <span id="cric-p1-15" class="marks-cell">---</span>
+    <span class="segment-label">15</span>
+    <span id="cric-p2-15" class="marks-cell-2">---</span>
+  </div>
+  <div class="cricket-row">
+    <span id="cric-p1-25" class="marks-cell">---</span>
+    <span class="segment-label">BULL</span>
+    <span id="cric-p2-25" class="marks-cell-2">---</span>
+  </div>
+  <div class="points-row">
+    <span id="cric-p1-pts" class="points-value">0</span>
+    <span class="points-label">PTS</span>
+    <span id="cric-p2-pts" class="points-value-2">0</span>
+  </div>
+</div>

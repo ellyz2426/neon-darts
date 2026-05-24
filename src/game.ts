@@ -9,6 +9,7 @@ export enum GameMode {
   Cricket = 'cricket',
   AroundTheClock = 'around-the-clock',
   Shanghai = 'shanghai',
+  Practice = 'practice',
 }
 
 export enum GameState {
@@ -39,6 +40,10 @@ export interface Player {
   // Shanghai specific
   shanghaiRound?: number;
   shanghaiScore?: number;
+  // Practice specific
+  practiceTotal?: number;
+  practiceDarts?: number;
+  practiceBest?: number;
 }
 
 export interface TurnHistory {
@@ -88,7 +93,10 @@ export class GameManager {
     this.players = [
       this.createPlayer('Player 1', false),
     ];
-    if (vsAI) {
+    if (mode === GameMode.Practice) {
+      // Solo practice — no opponent
+      this.vsAI = false;
+    } else if (vsAI) {
       this.players.push(this.createPlayer('CPU', true));
     } else {
       this.players.push(this.createPlayer('Player 2', false));
@@ -115,6 +123,11 @@ export class GameManager {
         player.shanghaiRound = 1;
         player.shanghaiScore = 0;
         break;
+      case GameMode.Practice:
+        player.practiceTotal = 0;
+        player.practiceDarts = 0;
+        player.practiceBest = 0;
+        break;
     }
     return player;
   }
@@ -136,6 +149,9 @@ export class GameManager {
         break;
       case GameMode.Shanghai:
         this.handleShanghaiThrow(player, result);
+        break;
+      case GameMode.Practice:
+        this.handlePracticeThrow(player, result);
         break;
     }
   }
@@ -205,6 +221,15 @@ export class GameManager {
     }
   }
 
+  private handlePracticeThrow(player: Player, result: ScoreResult) {
+    player.practiceTotal = (player.practiceTotal || 0) + result.total;
+    player.practiceDarts = (player.practiceDarts || 0) + 1;
+    this.turnScore += result.total;
+    if (result.total > (player.practiceBest || 0)) {
+      player.practiceBest = result.total;
+    }
+  }
+
   endTurn() {
     this.turnHistory.push({
       player: this.currentPlayer,
@@ -215,6 +240,12 @@ export class GameManager {
     this.currentTurnThrows = [];
     this.turnScore = 0;
     this.dartsThisRound = 0;
+
+    // Practice mode: single player, no switching
+    if (this.mode === GameMode.Practice) {
+      this.round++;
+      return;
+    }
 
     // Switch players
     this.currentPlayer = 1 - this.currentPlayer;
@@ -240,6 +271,8 @@ export class GameManager {
         return this.players.some(p => (p.currentTarget || 1) > 20);
       case GameMode.Shanghai:
         return this.round > this.maxRounds;
+      case GameMode.Practice:
+        return false; // Practice never ends — player quits manually
       default:
         return false;
     }
@@ -269,6 +302,7 @@ export class GameManager {
 
   getPlayerDisplay(playerIndex: number): string {
     const p = this.players[playerIndex];
+    if (!p) return '';
     switch (this.mode) {
       case GameMode.FiveOhOne:
         return `${p.remaining501}`;
@@ -278,6 +312,12 @@ export class GameManager {
         return `Target: ${p.currentTarget}`;
       case GameMode.Shanghai:
         return `${p.shanghaiScore || 0}`;
+      case GameMode.Practice: {
+        const avg = p.practiceDarts && p.practiceDarts > 0
+          ? Math.round((p.practiceTotal || 0) / p.practiceDarts * 3)
+          : 0;
+        return `Total: ${p.practiceTotal || 0} (Avg: ${avg})`;
+      }
       default:
         return '';
     }
@@ -289,6 +329,7 @@ export class GameManager {
       case GameMode.Cricket: return 'CRICKET';
       case GameMode.AroundTheClock: return 'AROUND THE CLOCK';
       case GameMode.Shanghai: return 'SHANGHAI';
+      case GameMode.Practice: return 'PRACTICE';
     }
   }
 

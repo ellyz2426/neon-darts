@@ -19,6 +19,7 @@ import {
 import { getScoreForPosition, ScoreResult } from './dartboard';
 import { AudioManager } from './audio';
 import { EffectsManager } from './effects';
+import { DartSkinManager } from './skins';
 
 interface Dart {
   group: Group;
@@ -26,6 +27,7 @@ interface Dart {
   state: 'flying' | 'stuck' | 'idle';
   trail: Vector3[];
   trailMesh: LineSegments | null;
+  trailColor: string;
 }
 
 export class DartManager {
@@ -33,6 +35,7 @@ export class DartManager {
   private boardGroup: Group;
   private audio: AudioManager;
   private effects: EffectsManager;
+  private skinManager: DartSkinManager | null = null;
   private darts: Dart[] = [];
   private maxDarts = 3;
   private throwCount = 0;
@@ -46,6 +49,10 @@ export class DartManager {
     this.effects = effects;
   }
 
+  setSkinManager(skinManager: DartSkinManager) {
+    this.skinManager = skinManager;
+  }
+
   canThrow(): boolean {
     return this.throwCount < this.maxDarts;
   }
@@ -53,7 +60,7 @@ export class DartManager {
   throwDart(aimX: number, aimY: number, power: number) {
     if (!this.canThrow()) return;
 
-    // Add some natural scatter based on power (more power = more steady)
+    // Natural scatter
     const scatter = 0.015 * (1 - power * 0.5) + 0.005;
     const finalX = aimX + (Math.random() - 0.5) * scatter;
     const finalY = aimY + (Math.random() - 0.5) * scatter;
@@ -61,22 +68,19 @@ export class DartManager {
     // Create dart mesh
     const dart = this.createDartMesh();
     
-    // Start from player position
     const startPos = new Vector3(0, 1.6, -0.3);
     dart.group.position.copy(startPos);
     this.world.scene.add(dart.group);
 
-    // Calculate target on board
     const targetPos = new Vector3(
       this.boardGroup.position.x + finalX,
       this.boardGroup.position.y + finalY,
       this.boardGroup.position.z + 0.02
     );
 
-    // Flight velocity — dart travels to board
     const direction = targetPos.clone().sub(startPos);
     const distance = direction.length();
-    const flightTime = 0.15 + 0.15 * (1 - power); // faster throw = less time
+    const flightTime = 0.15 + 0.15 * (1 - power);
     const speed = distance / flightTime;
     direction.normalize().multiplyScalar(speed);
 
@@ -85,13 +89,10 @@ export class DartManager {
     this.darts.push(dart);
     this.throwCount++;
 
-    // Throw sound
     this.audio.playThrow(power);
 
-    // Calculate score immediately for where it will land
     const result = getScoreForPosition(finalX, finalY);
 
-    // Schedule hit after flight time
     setTimeout(() => {
       if (dart.state === 'flying') {
         dart.state = 'stuck';
@@ -99,7 +100,6 @@ export class DartManager {
         dart.group.rotation.x = 0;
         dart.velocity.set(0, 0, 0);
 
-        // Hit sound
         if (result.total > 0) {
           this.audio.playHit(result);
         } else {
@@ -114,9 +114,22 @@ export class DartManager {
   }
 
   private createDartMesh(): Dart {
+    // Use skin manager if available
+    if (this.skinManager) {
+      const group = this.skinManager.createDartMesh();
+      return {
+        group,
+        velocity: new Vector3(),
+        state: 'idle',
+        trail: [],
+        trailMesh: null,
+        trailColor: this.skinManager.currentSkin.glowColor,
+      };
+    }
+
+    // Fallback default dart
     const group = new Group();
 
-    // Dart body (barrel) — glowing neon cylinder
     const barrelGeo = new CylinderGeometry(0.003, 0.004, 0.05, 8);
     const barrelMat = new MeshStandardMaterial({
       color: '#00ffff',
@@ -129,7 +142,6 @@ export class DartManager {
     barrel.rotation.x = Math.PI / 2;
     group.add(barrel);
 
-    // Dart point (tip) — sharp cone
     const tipGeo = new ConeGeometry(0.003, 0.02, 8);
     const tipMat = new MeshStandardMaterial({
       color: '#ffffff',
@@ -142,14 +154,13 @@ export class DartManager {
     tip.position.z = -0.035;
     group.add(tip);
 
-    // Flights (fins) — flat panels
     for (let i = 0; i < 4; i++) {
       const flightGeo = new CylinderGeometry(0, 0.008, 0.02, 3);
       const flightMat = new MeshBasicMaterial({
         color: '#ff00ff',
         transparent: true,
         opacity: 0.7,
-        side: 2, // DoubleSide
+        side: 2,
       });
       const flight = new Mesh(flightGeo, flightMat);
       flight.rotation.x = Math.PI / 2;
@@ -158,7 +169,6 @@ export class DartManager {
       group.add(flight);
     }
 
-    // Glow
     const glowGeo = new CylinderGeometry(0.008, 0.008, 0.06, 8);
     const glowMat = new MeshBasicMaterial({
       color: '#00ffff',
@@ -170,39 +180,31 @@ export class DartManager {
     glowMesh.rotation.x = Math.PI / 2;
     group.add(glowMesh);
 
-    // Point toward -Z (board direction)
-    group.rotation.x = 0;
-
     return {
       group,
       velocity: new Vector3(),
       state: 'idle',
       trail: [],
       trailMesh: null,
+      trailColor: '#00ffff',
     };
   }
 
   update(dt: number) {
     for (const dart of this.darts) {
       if (dart.state === 'flying') {
-        // Add slight gravity
         dart.velocity.y -= 0.5 * dt;
-        
-        // Move
         dart.group.position.add(dart.velocity.clone().multiplyScalar(dt));
 
-        // Point dart in flight direction
         if (dart.velocity.lengthSq() > 0.01) {
           const dir = dart.velocity.clone().normalize();
           dart.group.lookAt(dart.group.position.clone().add(dir));
         }
 
-        // Trail
         dart.trail.push(dart.group.position.clone());
         if (dart.trail.length > 20) dart.trail.shift();
         this.updateTrail(dart);
 
-        // Bounds check — if dart goes past the board
         if (dart.group.position.z < -3) {
           dart.state = 'stuck';
           dart.velocity.set(0, 0, 0);
@@ -227,7 +229,7 @@ export class DartManager {
     const geo = new BufferGeometry();
     geo.setAttribute('position', new Float32BufferAttribute(pts, 3));
     const mat = new LineBasicMaterial({
-      color: '#00ffff',
+      color: dart.trailColor,
       transparent: true,
       opacity: 0.3,
     });

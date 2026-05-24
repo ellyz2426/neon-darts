@@ -1,0 +1,28 @@
+<style>
+  .announce-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 3;
+    background-color: rgba(0, 0, 0, 0.85);
+    border-color: #00ffff;
+    border-width: 0.12;
+    border-radius: 1.5;
+    align-items: center;
+    gap: 1;
+  }
+  .announce-text {
+    font-size: 4;
+    color: #00ffff;
+    font-weight: bold;
+    text-align: center;
+  }
+  .announce-sub {
+    font-size: 2;
+    color: #888888;
+    text-align: center;
+  }
+</style>
+<div class="announce-panel">
+  <span id="announce-text" class="announce-text">YOUR TURN</span>
+  <span id="announce-sub" class="announce-sub">3 darts remaining</span>
+</div>

@@ -17,8 +17,13 @@ import { AudioManager } from './audio';
 import { AchievementManager, Achievement } from './achievements';
 import { StatsTracker } from './stats';
 import { AIOpponent, AIDifficulty } from './ai';
+import { getCheckoutSuggestion, isCheckoutPossible } from './checkout';
+import { DartSkinManager } from './skins';
+import { ScoreResult } from './dartboard';
 
-type PanelName = 'title' | 'modeselect' | 'difficulty' | 'hud' | 'pause' | 'gameover' | 'leaderboard' | 'achievements' | 'settings' | 'help' | 'stats' | 'message' | 'power';
+type PanelName = 'title' | 'modeselect' | 'difficulty' | 'hud' | 'pause' | 'gameover'
+  | 'leaderboard' | 'achievements' | 'settings' | 'help' | 'stats' | 'message' | 'power'
+  | 'throwhistory' | 'cricket' | 'checkout' | 'announce';
 
 function setText(el: any, text: string) {
   if (!el) return;
@@ -37,12 +42,15 @@ export class UIManager {
   private achievements: AchievementManager;
   private stats: StatsTracker;
   private ai: AIOpponent;
+  public skinManager: DartSkinManager;
 
   private panels: Map<PanelName, Entity> = new Map();
   private docs: Map<PanelName, UIKitDocument | null> = new Map();
 
   private messageTimer = 0;
+  private announceTimer = 0;
   private currentPanel: PanelName | null = null;
+  private throwHistory: ScoreResult[] = [];
 
   constructor(
     world: World, game: GameManager, dartManager: DartManager,
@@ -56,13 +64,14 @@ export class UIManager {
     this.achievements = achievements;
     this.stats = stats;
     this.ai = ai;
+    this.skinManager = new DartSkinManager();
 
     this.createPanels();
     this.setupAchievementToast();
   }
 
   private createPanels() {
-    // Title screen — world-space, floating in front of the board
+    // Title screen
     this.createPanel('title', '/ui/title.json', {
       position: new Vector3(0, 1.7, -1.5),
       maxWidth: 0.8,
@@ -73,30 +82,61 @@ export class UIManager {
     this.createPanel('modeselect', '/ui/modeselect.json', {
       position: new Vector3(0, 1.7, -1.5),
       maxWidth: 0.8,
-      maxHeight: 1.0,
+      maxHeight: 1.2,
     });
 
     // Difficulty select
     this.createPanel('difficulty', '/ui/difficulty.json', {
       position: new Vector3(0, 1.7, -1.5),
       maxWidth: 0.7,
-      maxHeight: 0.8,
+      maxHeight: 1.0,
     });
 
-    // HUD — head-following
+    // HUD
     this.createPanel('hud', '/ui/hud.json', {
       follower: true,
-      offsetPosition: [0.25, -0.12, -0.5] as [number, number, number],
+      offsetPosition: [0.25, -0.12, -0.5],
       maxWidth: 0.3,
       maxHeight: 0.15,
     });
 
-    // Power bar — head-following, bottom center
+    // Power bar
     this.createPanel('power', '/ui/power.json', {
       follower: true,
-      offsetPosition: [0, -0.2, -0.5] as [number, number, number],
+      offsetPosition: [0, -0.2, -0.5],
       maxWidth: 0.15,
       maxHeight: 0.04,
+    });
+
+    // Throw history — left HUD
+    this.createPanel('throwhistory', '/ui/throwhistory.json', {
+      follower: true,
+      offsetPosition: [-0.28, -0.12, -0.5],
+      maxWidth: 0.2,
+      maxHeight: 0.12,
+    });
+
+    // Checkout suggestion — below HUD
+    this.createPanel('checkout', '/ui/checkout.json', {
+      follower: true,
+      offsetPosition: [0.25, -0.22, -0.5],
+      maxWidth: 0.22,
+      maxHeight: 0.06,
+    });
+
+    // Cricket scoreboard — world-space, next to the board
+    this.createPanel('cricket', '/ui/cricket.json', {
+      position: new Vector3(0.6, 1.7, -2.3),
+      maxWidth: 0.5,
+      maxHeight: 0.7,
+    });
+
+    // Turn announcement — head-following, center
+    this.createPanel('announce', '/ui/announce.json', {
+      follower: true,
+      offsetPosition: [0, 0.05, -0.6],
+      maxWidth: 0.4,
+      maxHeight: 0.15,
     });
 
     // Pause
@@ -131,7 +171,7 @@ export class UIManager {
     this.createPanel('settings', '/ui/settings.json', {
       position: new Vector3(0, 1.7, -1.5),
       maxWidth: 0.7,
-      maxHeight: 0.9,
+      maxHeight: 1.0,
     });
 
     // Help
@@ -148,10 +188,10 @@ export class UIManager {
       maxHeight: 1.0,
     });
 
-    // Message toast — head-following, top
+    // Message toast
     this.createPanel('message', '/ui/message.json', {
       follower: true,
-      offsetPosition: [0, 0.1, -0.5] as [number, number, number],
+      offsetPosition: [0, 0.1, -0.5],
       maxWidth: 0.3,
       maxHeight: 0.06,
     });
@@ -186,7 +226,6 @@ export class UIManager {
       });
     }
 
-    // Hide initially
     entity.object3D.visible = false;
     this.panels.set(name, entity);
     this.docs.set(name, null);
@@ -226,6 +265,7 @@ export class UIManager {
         });
         doc.getElementById('btn-settings')?.addEventListener('click', () => {
           this.audio.playButtonClick();
+          this.updateSettingsDisplay();
           this.showPanel('settings');
         });
         doc.getElementById('btn-help')?.addEventListener('click', () => {
@@ -260,6 +300,12 @@ export class UIManager {
           this.game.mode = GameMode.Shanghai;
           this.showPanel('difficulty');
         });
+        doc.getElementById('btn-practice')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.throwHistory = [];
+          this.game.startGame(GameMode.Practice, false);
+          this.showPanel('hud');
+        });
         doc.getElementById('btn-mode-back')?.addEventListener('click', () => {
           this.audio.playButtonClick();
           this.showPanel('title');
@@ -270,20 +316,33 @@ export class UIManager {
         doc.getElementById('btn-easy')?.addEventListener('click', () => {
           this.audio.playButtonClick();
           this.ai.difficulty = AIDifficulty.Easy;
+          this.throwHistory = [];
           this.game.startGame(this.game.mode, true);
           this.showPanel('hud');
+          this.showTurnAnnouncement();
         });
         doc.getElementById('btn-medium')?.addEventListener('click', () => {
           this.audio.playButtonClick();
           this.ai.difficulty = AIDifficulty.Medium;
+          this.throwHistory = [];
           this.game.startGame(this.game.mode, true);
           this.showPanel('hud');
+          this.showTurnAnnouncement();
         });
         doc.getElementById('btn-hard')?.addEventListener('click', () => {
           this.audio.playButtonClick();
           this.ai.difficulty = AIDifficulty.Hard;
+          this.throwHistory = [];
           this.game.startGame(this.game.mode, true);
           this.showPanel('hud');
+          this.showTurnAnnouncement();
+        });
+        doc.getElementById('btn-friend')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.throwHistory = [];
+          this.game.startGame(this.game.mode, false);
+          this.showPanel('hud');
+          this.showTurnAnnouncement();
         });
         doc.getElementById('btn-diff-back')?.addEventListener('click', () => {
           this.audio.playButtonClick();
@@ -309,8 +368,10 @@ export class UIManager {
         doc.getElementById('btn-rematch')?.addEventListener('click', () => {
           this.audio.playButtonClick();
           this.dartManager.clearDarts();
+          this.throwHistory = [];
           this.game.startGame(this.game.mode, this.game.vsAI);
           this.showPanel('hud');
+          this.showTurnAnnouncement();
         });
         doc.getElementById('btn-menu')?.addEventListener('click', () => {
           this.audio.playButtonClick();
@@ -355,6 +416,16 @@ export class UIManager {
           this.audio.setVolume('music', this.audio.musicVolume - 0.1);
           this.updateSettingsDisplay();
         });
+        doc.getElementById('btn-skin-next')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.skinManager.nextSkin();
+          this.updateSettingsDisplay();
+        });
+        doc.getElementById('btn-skin-prev')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.skinManager.prevSkin();
+          this.updateSettingsDisplay();
+        });
         doc.getElementById('btn-settings-back')?.addEventListener('click', () => {
           this.audio.playButtonClick();
           this.showPanel('title');
@@ -366,29 +437,56 @@ export class UIManager {
 
   showPanel(name: PanelName | 'hud') {
     // Hide all non-HUD panels
+    const hudPanels: PanelName[] = ['hud', 'power', 'message', 'throwhistory', 'checkout', 'cricket', 'announce'];
+
     for (const [pName, entity] of this.panels) {
-      if (pName === 'hud' || pName === 'power' || pName === 'message') continue;
+      if (hudPanels.includes(pName)) continue;
       entity.object3D.visible = false;
     }
 
     if (name === 'hud') {
-      // Show HUD only
+      // Show HUD panels
       const hud = this.panels.get('hud');
       if (hud) hud.object3D.visible = true;
+
+      // Show throw history during gameplay
+      const hist = this.panels.get('throwhistory');
+      if (hist) hist.object3D.visible = true;
+
+      // Show checkout in 501 mode
+      if (this.game.mode === GameMode.FiveOhOne) {
+        this.updateCheckout();
+      } else {
+        const co = this.panels.get('checkout');
+        if (co) co.object3D.visible = false;
+      }
+
+      // Show cricket scoreboard
+      if (this.game.mode === GameMode.Cricket) {
+        const cric = this.panels.get('cricket');
+        if (cric) cric.object3D.visible = true;
+        this.updateCricketScoreboard();
+      } else {
+        const cric = this.panels.get('cricket');
+        if (cric) cric.object3D.visible = false;
+      }
+
       this.updateGameState();
+      this.updateThrowHistory();
       this.currentPanel = 'hud';
-      // Hide other panels
+
+      // Hide menu panels
       for (const [pName, entity] of this.panels) {
-        if (pName !== 'hud' && pName !== 'power' && pName !== 'message') {
+        if (!hudPanels.includes(pName)) {
           entity.object3D.visible = false;
         }
       }
     } else {
-      // Hide HUD when showing menu panels
-      const hud = this.panels.get('hud');
-      if (hud) hud.object3D.visible = false;
-      const power = this.panels.get('power');
-      if (power) power.object3D.visible = false;
+      // Hide all HUD panels when showing menu panels
+      for (const n of hudPanels) {
+        const p = this.panels.get(n);
+        if (p) p.object3D.visible = false;
+      }
 
       const panel = this.panels.get(name);
       if (panel) panel.object3D.visible = true;
@@ -412,10 +510,124 @@ export class UIManager {
     const label = doc.getElementById('power-label');
     const pct = Math.round(power * 100);
     setText(label, `${pct}%`);
-    // Update bar width visually by changing text
     const filled = Math.round(power * 10);
     const blocks = '\u2588'.repeat(filled) + '\u2591'.repeat(10 - filled);
     setText(bar, blocks);
+  }
+
+  // Called after each dart hit
+  recordThrow(result: ScoreResult) {
+    this.throwHistory.push(result);
+    // Keep only the current turn's throws (max 3)
+    if (this.throwHistory.length > 3) {
+      this.throwHistory = this.throwHistory.slice(-3);
+    }
+    this.updateThrowHistory();
+
+    // Update checkout in 501 mode
+    if (this.game.mode === GameMode.FiveOhOne) {
+      this.updateCheckout();
+    }
+
+    // Update cricket scoreboard
+    if (this.game.mode === GameMode.Cricket) {
+      this.updateCricketScoreboard();
+    }
+  }
+
+  clearThrowHistory() {
+    this.throwHistory = [];
+    this.updateThrowHistory();
+  }
+
+  private updateThrowHistory() {
+    const doc = this.getDoc('throwhistory');
+    if (!doc) return;
+
+    for (let i = 0; i < 3; i++) {
+      const result = this.throwHistory[i];
+      const labelEl = doc.getElementById(`hist-label-${i}`);
+      const scoreEl = doc.getElementById(`hist-score-${i}`);
+      if (result) {
+        setText(labelEl, result.label);
+        setText(scoreEl, `${result.total}`);
+      } else {
+        setText(labelEl, '---');
+        setText(scoreEl, '-');
+      }
+    }
+  }
+
+  private updateCheckout() {
+    const co = this.panels.get('checkout');
+    if (!co) return;
+
+    const player = this.game.players[this.game.currentPlayer];
+    if (!player) {
+      co.object3D.visible = false;
+      return;
+    }
+
+    const remaining = player.remaining501 || 0;
+    if (remaining <= 170 && remaining >= 2 && isCheckoutPossible(remaining)) {
+      co.object3D.visible = true;
+      const doc = this.getDoc('checkout');
+      if (doc) {
+        setText(doc.getElementById('co-remaining'), `Remaining: ${remaining}`);
+        const route = getCheckoutSuggestion(remaining);
+        setText(doc.getElementById('co-route'), route || '---');
+      }
+    } else {
+      co.object3D.visible = false;
+    }
+  }
+
+  private updateCricketScoreboard() {
+    const doc = this.getDoc('cricket');
+    if (!doc) return;
+
+    if (this.game.players.length < 2) return;
+
+    const p1 = this.game.players[0];
+    const p2 = this.game.players[1];
+
+    setText(doc.getElementById('cric-p1-name'), p1.name);
+    setText(doc.getElementById('cric-p2-name'), p2.name);
+
+    const cricketNums = [20, 19, 18, 17, 16, 15, 25];
+    for (const num of cricketNums) {
+      const p1Marks = p1.cricketMarks?.[num] || 0;
+      const p2Marks = p2.cricketMarks?.[num] || 0;
+      setText(doc.getElementById(`cric-p1-${num}`), this.marksToSymbol(p1Marks));
+      setText(doc.getElementById(`cric-p2-${num}`), this.marksToSymbol(p2Marks));
+    }
+
+    setText(doc.getElementById('cric-p1-pts'), `${p1.cricketPoints || 0}`);
+    setText(doc.getElementById('cric-p2-pts'), `${p2.cricketPoints || 0}`);
+  }
+
+  private marksToSymbol(marks: number): string {
+    if (marks === 0) return '---';
+    if (marks === 1) return '/';
+    if (marks === 2) return 'X';
+    return '\u2718\u2718\u2718'; // ✘✘✘ = closed
+  }
+
+  showTurnAnnouncement() {
+    const player = this.game.players[this.game.currentPlayer];
+    if (!player) return;
+
+    const announce = this.panels.get('announce');
+    if (announce) announce.object3D.visible = true;
+
+    const doc = this.getDoc('announce');
+    if (doc) {
+      setText(doc.getElementById('announce-text'), player.isAI ? "CPU'S TURN" : `${player.name.toUpperCase()}'S TURN`);
+      setText(doc.getElementById('announce-sub'), '3 darts remaining');
+    }
+
+    this.announceTimer = 1.5;
+    this.audio.playTurnChange();
   }
 
   updateGameState() {
@@ -446,15 +658,15 @@ export class UIManager {
     setText(doc.getElementById('go-winner'), `${winnerName} WINS!`);
     setText(doc.getElementById('go-mode'), this.game.getModeLabel());
 
-    // Final scores
     const p1 = this.game.getPlayerDisplay(0);
-    const p2 = this.game.getPlayerDisplay(1);
+    const p2 = this.game.players.length > 1 ? this.game.getPlayerDisplay(1) : '';
     setText(doc.getElementById('go-p1-score'), `${this.game.players[0]?.name}: ${p1}`);
-    setText(doc.getElementById('go-p2-score'), `${this.game.players[1]?.name}: ${p2}`);
+    if (this.game.players.length > 1) {
+      setText(doc.getElementById('go-p2-score'), `${this.game.players[1]?.name}: ${p2}`);
+    }
   }
 
   private updateLeaderboard() {
-    // Leaderboard from localStorage
     const doc = this.getDoc('leaderboard');
     if (!doc) return;
 
@@ -496,6 +708,7 @@ export class UIManager {
     setText(doc.getElementById('vol-master'), `Master: ${Math.round(this.audio.masterVolume * 100)}%`);
     setText(doc.getElementById('vol-sfx'), `SFX: ${Math.round(this.audio.sfxVolume * 100)}%`);
     setText(doc.getElementById('vol-music'), `Music: ${Math.round(this.audio.musicVolume * 100)}%`);
+    setText(doc.getElementById('skin-name'), this.skinManager.currentSkin.name);
   }
 
   private updateStatsPanel() {
@@ -537,6 +750,15 @@ export class UIManager {
       this.messageTimer -= dt;
       if (this.messageTimer <= 0) {
         const panel = this.panels.get('message');
+        if (panel) panel.object3D.visible = false;
+      }
+    }
+
+    // Announcement timer
+    if (this.announceTimer > 0) {
+      this.announceTimer -= dt;
+      if (this.announceTimer <= 0) {
+        const panel = this.panels.get('announce');
         if (panel) panel.object3D.visible = false;
       }
     }

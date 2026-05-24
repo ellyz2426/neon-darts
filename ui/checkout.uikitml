@@ -1,0 +1,31 @@
+<style>
+  .checkout-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5;
+    background-color: rgba(0, 0, 0, 0.75);
+    border-color: #ffcc00;
+    border-width: 0.08;
+    border-radius: 0.8;
+    gap: 0.5;
+  }
+  .checkout-title {
+    font-size: 1.2;
+    color: #ffcc00;
+    font-weight: bold;
+  }
+  .checkout-route {
+    font-size: 1.6;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  .checkout-remaining {
+    font-size: 1.3;
+    color: #888888;
+  }
+</style>
+<div class="checkout-panel">
+  <span class="checkout-title">CHECKOUT</span>
+  <span id="co-remaining" class="checkout-remaining">Remaining: ---</span>
+  <span id="co-route" class="checkout-route">---</span>
+</div>

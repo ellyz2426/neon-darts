@@ -105,6 +105,9 @@ async function main() {
   // UI manager
   const ui = new UIManager(world, game, dartManager, audio, achievements, stats, ai);
 
+  // Connect dart skin manager to dart manager
+  dartManager.setSkinManager(ui.skinManager);
+
   // Input state
   let isCharging = false;
   let chargeStart = 0;
@@ -113,7 +116,6 @@ async function main() {
   const maxCharge = 1500; // ms for full power
   let mouseX = 0;
   let mouseY = 0;
-  let isPointerLocked = false;
 
   // Browser mouse input
   const canvas = container.querySelector('canvas');
@@ -141,16 +143,13 @@ async function main() {
 
     canvas.addEventListener('mousemove', (e: MouseEvent) => {
       if (game.state === GameState.Playing) {
-        // Map mouse position to aim coordinates on the board
         const rect = canvas.getBoundingClientRect();
         mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
         mouseY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
 
-        // Raycaster to find board intersection
         const raycaster = new Raycaster();
         raycaster.setFromCamera(new Vector2(mouseX, mouseY), (world as any).camera || (world as any).renderer?.xr?.getCamera?.() || world.scene.children.find((c: any) => c.isCamera));
         
-        // Use a simple plane at the board position for aim
         const boardPlane = new PlaneGeometry(1, 1);
         const boardMesh = new Mesh(boardPlane, new MeshBasicMaterial({ visible: false }));
         boardMesh.position.copy(boardGroup.position);
@@ -186,6 +185,7 @@ async function main() {
   // Dart hit callback
   dartManager.onDartHit = (result: ScoreResult) => {
     game.recordThrow(result);
+    ui.recordThrow(result);
     ui.updateGameState();
     effects.spawnHitParticles(
       new Vector3(
@@ -196,14 +196,21 @@ async function main() {
       result.multiplier === 3 ? '#ff00ff' : result.multiplier === 2 ? '#00ff00' : '#00ffff'
     );
 
+    // Track stats
+    stats.recordThrow(result.total, result.multiplier, result.segment);
+
     // Check achievements
     achievements.checkAll(game, result);
 
     // Check if turn is over (3 darts thrown)
     if (game.dartsThisRound >= 3) {
+      // Record the turn score
+      stats.recordTurn(game.turnScore);
+
       setTimeout(() => {
         game.endTurn();
         dartManager.clearDarts();
+        ui.clearThrowHistory();
 
         if (game.isGameOver()) {
           game.setState(GameState.GameOver);
@@ -211,15 +218,40 @@ async function main() {
           audio.playGameOver(game.getWinner() === 1);
           stats.recordGame(game.mode, game.getWinner() === 1);
           achievements.checkAll(game, null);
+
+          // Save to leaderboard
+          saveToLeaderboard(game);
         } else if (game.isAITurn()) {
-          // AI throws
-          setTimeout(() => performAITurn(), 800);
+          // Show turn announcement then AI throws
+          ui.showTurnAnnouncement();
+          setTimeout(() => performAITurn(), 1800);
+        } else {
+          // Show turn announcement for next player
+          ui.showTurnAnnouncement();
         }
 
         ui.updateGameState();
       }, 600);
     }
   };
+
+  // Save result to leaderboard
+  function saveToLeaderboard(game: GameManager) {
+    try {
+      const saved = localStorage.getItem('neon-darts-leaderboard');
+      const entries: { mode: string; winner: string; score: string; date: string }[] = saved ? JSON.parse(saved) : [];
+      const winner = game.getWinner();
+      entries.unshift({
+        mode: game.getModeLabel(),
+        winner: game.players[winner - 1]?.name || 'Player',
+        score: game.getPlayerDisplay(winner - 1),
+        date: new Date().toISOString().split('T')[0],
+      });
+      // Keep top 50
+      while (entries.length > 50) entries.pop();
+      localStorage.setItem('neon-darts-leaderboard', JSON.stringify(entries));
+    } catch {}
+  }
 
   // AI turn
   function performAITurn() {
@@ -230,7 +262,6 @@ async function main() {
 
     dartManager.throwDart(x, y, 0.7 + Math.random() * 0.2);
 
-    // AI throws 3 darts with delays
     if (game.dartsThisRound < 2) {
       setTimeout(() => {
         if (game.isAITurn() && game.state === GameState.Playing && game.dartsThisRound < 3) {
@@ -259,10 +290,9 @@ async function main() {
     // XR input
     const rightGamepad = (world.input as any)?.xr?.gamepads?.right;
     if (rightGamepad) {
-      const triggerDown = rightGamepad.getButtonDown?.(0); // Trigger
+      const triggerDown = rightGamepad.getButtonDown?.(0);
       const triggerUp = rightGamepad.getButtonUp?.(0);
       const triggerValue = rightGamepad.getButtonValue?.(0) ?? 0;
-      const aDown = rightGamepad.getButtonDown?.(3); // A
       const bDown = rightGamepad.getButtonDown?.(4); // B
 
       if (game.state === GameState.Playing && !game.isAITurn()) {
@@ -278,14 +308,12 @@ async function main() {
 
           if (triggerUp || triggerValue < 0.1) {
             const power = elapsed / maxCharge;
-            // Use controller aim direction
             const spaces = (world as any).playerSpaceEntities;
             if (spaces?.raySpaces?.right) {
               const raySpace = spaces.raySpaces.right;
               const dir = new Vector3(0, 0, -1).applyQuaternion(raySpace.object3D.quaternion);
               const origin = raySpace.object3D.position.clone();
 
-              // Intersect with board plane
               const t = (boardGroup.position.z - origin.z) / dir.z;
               if (t > 0) {
                 const hitX = origin.x + dir.x * t - boardGroup.position.x;
@@ -293,7 +321,6 @@ async function main() {
                 dartManager.throwDart(hitX, hitY, power);
               }
             } else {
-              // Fallback — aim at center
               dartManager.throwDart(0, 0, power);
             }
             xrCharging = false;
