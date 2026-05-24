@@ -53,6 +53,7 @@ import { UIManager } from './ui';
 import { AchievementManager } from './achievements';
 import { StatsTracker } from './stats';
 import { EffectsManager } from './effects';
+import { ComboTracker } from './combo';
 
 async function main() {
   const container = document.getElementById('app') as HTMLDivElement;
@@ -107,6 +108,9 @@ async function main() {
 
   // Connect dart skin manager to dart manager
   dartManager.setSkinManager(ui.skinManager);
+
+  // Combo tracker
+  const combo = new ComboTracker();
 
   // Input state
   let isCharging = false;
@@ -199,6 +203,12 @@ async function main() {
     // Track stats
     stats.recordThrow(result.total, result.multiplier, result.segment);
 
+    // Combo feedback
+    const comboResult = combo.onThrow(result.total);
+    if (comboResult) {
+      ui.showMessage(comboResult.label, 1.5);
+    }
+
     // Check achievements
     achievements.checkAll(game, result);
 
@@ -206,6 +216,12 @@ async function main() {
     if (game.dartsThisRound >= 3) {
       // Record the turn score
       stats.recordTurn(game.turnScore);
+
+      // Check for turn streaks
+      const turnCombo = combo.onTurnEnd(game.turnScore);
+      if (turnCombo) {
+        ui.showMessage(turnCombo.label, 2.0);
+      }
 
       setTimeout(() => {
         game.endTurn();

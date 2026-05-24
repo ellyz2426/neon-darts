@@ -40,7 +40,7 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "Release: Throw dart"
+          "Release: Throw dart at aim point"
         ],
         "properties": {
           "class": "text"
@@ -128,23 +128,12 @@
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "A Button: Confirm / Select"
-        ],
-        "properties": {
-          "class": "text"
-        },
-        "dataUid": "uid-13"
-      },
-      {
-        "sourceTag": "span",
-        "type": "custom",
-        "children": [
-          "Game Rules"
+          "Game Modes"
         ],
         "properties": {
           "class": "section"
         },
-        "dataUid": "uid-14"
+        "dataUid": "uid-13"
       },
       {
         "sourceTag": "span",
@@ -155,18 +144,18 @@
         "properties": {
           "class": "text"
         },
-        "dataUid": "uid-15"
+        "dataUid": "uid-14"
       },
       {
         "sourceTag": "span",
         "type": "custom",
         "children": [
-          "Cricket: Close 15-20 + bulls, score on open numbers"
+          "Cricket: Close 15-20 + bulls, score on open"
         ],
         "properties": {
           "class": "text"
         },
-        "dataUid": "uid-16"
+        "dataUid": "uid-15"
       },
       {
         "sourceTag": "span",
@@ -177,7 +166,7 @@
         "properties": {
           "class": "text"
         },
-        "dataUid": "uid-17"
+        "dataUid": "uid-16"
       },
       {
         "sourceTag": "span",
@@ -188,7 +177,73 @@
         "properties": {
           "class": "text"
         },
+        "dataUid": "uid-17"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "Free Practice: Throw freely, track averages"
+        ],
+        "properties": {
+          "class": "text"
+        },
         "dataUid": "uid-18"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "Features"
+        ],
+        "properties": {
+          "class": "section"
+        },
+        "dataUid": "uid-19"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "Checkout: 501 shows optimal finish routes"
+        ],
+        "properties": {
+          "class": "highlight"
+        },
+        "dataUid": "uid-20"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "Cricket Board: Live marks scoreboard"
+        ],
+        "properties": {
+          "class": "highlight"
+        },
+        "dataUid": "uid-21"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "Dart Skins: 6 styles in Settings"
+        ],
+        "properties": {
+          "class": "highlight"
+        },
+        "dataUid": "uid-22"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "VS Friend: Local 2-player mode"
+        ],
+        "properties": {
+          "class": "highlight"
+        },
+        "dataUid": "uid-23"
       },
       {
         "type": "container",
@@ -203,14 +258,14 @@
             "properties": {
               "class": "btn-text"
             },
-            "dataUid": "uid-20"
+            "dataUid": "uid-25"
           }
         ],
         "properties": {
           "id": "btn-back",
           "class": "btn"
         },
-        "dataUid": "uid-19"
+        "dataUid": "uid-24"
       }
     ],
     "properties": {
@@ -232,7 +287,7 @@
         "borderWidth": "0.15",
         "borderRadius": 1.5,
         "alignItems": "center",
-        "gap": "1"
+        "gap": "0.8"
       }
     },
     "title": {
@@ -244,15 +299,21 @@
     },
     "section": {
       "content": {
-        "fontSize": "2",
+        "fontSize": "1.8",
         "color": "#00ffff",
         "fontWeight": "bold"
       }
     },
     "text": {
       "content": {
-        "fontSize": "1.3",
+        "fontSize": "1.2",
         "color": "#aaaacc"
+      }
+    },
+    "highlight": {
+      "content": {
+        "fontSize": "1.2",
+        "color": "#ffcc00"
       }
     },
     "btn": {
@@ -316,157 +377,157 @@
         "column": 7
       }
     },
-    "btn": {
+    "highlight": {
       "start": {
         "line": 5,
         "column": 2
       },
       "end": {
         "line": 5,
+        "column": 12
+      }
+    },
+    "btn": {
+      "start": {
+        "line": 6,
+        "column": 2
+      },
+      "end": {
+        "line": 6,
         "column": 6
       }
     },
     "btn-text": {
       "start": {
-        "line": 6,
+        "line": 7,
         "column": 2
       },
       "end": {
-        "line": 6,
+        "line": 7,
         "column": 11
       }
     },
     "uid-1": {
       "start": {
-        "line": 8,
+        "line": 9,
         "column": 0
       },
       "end": {
-        "line": 27,
+        "line": 33,
         "column": 6
       }
     },
     "uid-2": {
       "start": {
-        "line": 9,
+        "line": 10,
         "column": 2
       },
       "end": {
-        "line": 9,
+        "line": 10,
         "column": 40
       }
     },
     "uid-3": {
       "start": {
-        "line": 10,
+        "line": 11,
         "column": 2
       },
       "end": {
-        "line": 10,
+        "line": 11,
         "column": 47
       }
     },
     "uid-4": {
       "start": {
-        "line": 11,
+        "line": 12,
         "column": 2
       },
       "end": {
-        "line": 11,
+        "line": 12,
         "column": 65
       }
     },
     "uid-5": {
       "start": {
-        "line": 12,
+        "line": 13,
         "column": 2
       },
       "end": {
-        "line": 12,
-        "column": 47
+        "line": 13,
+        "column": 60
       }
     },
     "uid-6": {
       "start": {
-        "line": 13,
+        "line": 14,
         "column": 2
       },
       "end": {
-        "line": 13,
+        "line": 14,
         "column": 51
       }
     },
     "uid-7": {
       "start": {
-        "line": 14,
+        "line": 15,
         "column": 2
       },
       "end": {
-        "line": 14,
+        "line": 15,
         "column": 38
       }
     },
     "uid-8": {
       "start": {
-        "line": 15,
+        "line": 16,
         "column": 2
       },
       "end": {
-        "line": 15,
+        "line": 16,
         "column": 42
       }
     },
     "uid-9": {
       "start": {
-        "line": 16,
+        "line": 17,
         "column": 2
       },
       "end": {
-        "line": 16,
+        "line": 17,
         "column": 60
       }
     },
     "uid-10": {
       "start": {
-        "line": 17,
+        "line": 18,
         "column": 2
       },
       "end": {
-        "line": 17,
+        "line": 18,
         "column": 55
       }
     },
     "uid-11": {
       "start": {
-        "line": 18,
+        "line": 19,
         "column": 2
       },
       "end": {
-        "line": 18,
+        "line": 19,
         "column": 58
       }
     },
     "uid-12": {
       "start": {
-        "line": 19,
+        "line": 20,
         "column": 2
       },
       "end": {
-        "line": 19,
+        "line": 20,
         "column": 43
       }
     },
     "uid-13": {
-      "start": {
-        "line": 20,
-        "column": 2
-      },
-      "end": {
-        "line": 20,
-        "column": 54
-      }
-    },
-    "uid-14": {
       "start": {
         "line": 21,
         "column": 2
@@ -476,7 +537,7 @@
         "column": 41
       }
     },
-    "uid-15": {
+    "uid-14": {
       "start": {
         "line": 22,
         "column": 2
@@ -486,17 +547,17 @@
         "column": 72
       }
     },
-    "uid-16": {
+    "uid-15": {
       "start": {
         "line": 23,
         "column": 2
       },
       "end": {
         "line": 23,
-        "column": 79
+        "column": 71
       }
     },
-    "uid-17": {
+    "uid-16": {
       "start": {
         "line": 24,
         "column": 2
@@ -506,7 +567,7 @@
         "column": 66
       }
     },
-    "uid-18": {
+    "uid-17": {
       "start": {
         "line": 25,
         "column": 2
@@ -516,23 +577,83 @@
         "column": 68
       }
     },
-    "uid-19": {
+    "uid-18": {
       "start": {
         "line": 26,
         "column": 2
       },
       "end": {
         "line": 26,
-        "column": 73
+        "column": 71
+      }
+    },
+    "uid-19": {
+      "start": {
+        "line": 27,
+        "column": 2
+      },
+      "end": {
+        "line": 27,
+        "column": 39
       }
     },
     "uid-20": {
       "start": {
-        "line": 26,
+        "line": 28,
+        "column": 2
+      },
+      "end": {
+        "line": 28,
+        "column": 74
+      }
+    },
+    "uid-21": {
+      "start": {
+        "line": 29,
+        "column": 2
+      },
+      "end": {
+        "line": 29,
+        "column": 69
+      }
+    },
+    "uid-22": {
+      "start": {
+        "line": 30,
+        "column": 2
+      },
+      "end": {
+        "line": 30,
+        "column": 65
+      }
+    },
+    "uid-23": {
+      "start": {
+        "line": 31,
+        "column": 2
+      },
+      "end": {
+        "line": 31,
+        "column": 63
+      }
+    },
+    "uid-24": {
+      "start": {
+        "line": 32,
+        "column": 2
+      },
+      "end": {
+        "line": 32,
+        "column": 73
+      }
+    },
+    "uid-25": {
+      "start": {
+        "line": 32,
         "column": 33
       },
       "end": {
-        "line": 26,
+        "line": 32,
         "column": 67
       }
     }

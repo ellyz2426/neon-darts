@@ -17,6 +17,10 @@ import {
   BufferGeometry,
   Float32BufferAttribute,
   World,
+  PlaneGeometry,
+  CanvasTexture,
+  NearestFilter,
+  SRGBColorSpace,
 } from '@iwsdk/core';
 
 // Standard dartboard segment order (clockwise from top)
@@ -159,22 +163,15 @@ export function createDartboard(world: World): Group {
     drawSegmentRing(board, BOARD_RADIUS, DOUBLE_OUTER, startAngle, segmentAngle,
       isEven ? SEGMENT_COLORS.black : SEGMENT_COLORS.white);
 
-    // Segment number label positions
+    // Segment number label — canvas texture for sharp text
     const labelAngle = i * segmentAngle - Math.PI / 2;
-    const labelDist = BOARD_RADIUS + 0.025;
+    const labelDist = BOARD_RADIUS + 0.03;
     const labelX = Math.cos(labelAngle) * labelDist;
     const labelY = Math.sin(labelAngle) * labelDist;
 
-    // Number indicator — small glowing sphere
-    const numGeo = new CircleGeometry(0.008, 8);
-    const numMat = new MeshBasicMaterial({
-      color: '#ffffff',
-      transparent: true,
-      opacity: 0.7,
-    });
-    const numMesh = new Mesh(numGeo, numMat);
-    numMesh.position.set(labelX, labelY, 0.001);
-    board.add(numMesh);
+    const numLabel = createNumberLabel(BOARD_SEGMENTS[i]);
+    numLabel.position.set(labelX, labelY, 0.002);
+    board.add(numLabel);
   }
 
   // Outer bull
@@ -294,4 +291,45 @@ function drawWireSpoke(parent: Group, angle: number, innerR: number, outerR: num
   geo.setAttribute('position', new Float32BufferAttribute(pts, 3));
   const mat = new LineBasicMaterial({ color: SEGMENT_COLORS.wire, transparent: true, opacity: 0.6 });
   parent.add(new LineSegments(geo, mat));
+}
+
+function createNumberLabel(num: number): Mesh {
+  const size = 64;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx2d = canvas.getContext('2d')!;
+
+  ctx2d.clearRect(0, 0, size, size);
+  ctx2d.font = 'bold 40px Arial, sans-serif';
+  ctx2d.textAlign = 'center';
+  ctx2d.textBaseline = 'middle';
+
+  // Outer glow
+  ctx2d.shadowColor = '#00ffff';
+  ctx2d.shadowBlur = 8;
+  ctx2d.fillStyle = '#00ffff';
+  ctx2d.fillText(String(num), size / 2, size / 2);
+
+  // Crisp white fill on top
+  ctx2d.shadowBlur = 0;
+  ctx2d.fillStyle = '#ffffff';
+  ctx2d.fillText(String(num), size / 2, size / 2);
+
+  const texture = new CanvasTexture(canvas);
+  texture.minFilter = NearestFilter;
+  texture.magFilter = NearestFilter;
+  if ('colorSpace' in texture) {
+    (texture as any).colorSpace = SRGBColorSpace;
+  }
+
+  const geo = new PlaneGeometry(0.025, 0.025);
+  const mat = new MeshBasicMaterial({
+    map: texture,
+    transparent: true,
+    depthWrite: false,
+    side: DoubleSide,
+  });
+
+  return new Mesh(geo, mat);
 }

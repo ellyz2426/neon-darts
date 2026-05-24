@@ -1,8 +1,9 @@
 <style>
-  .panel { display: flex; flex-direction: column; padding-top: 2; padding-bottom: 2; padding-left: 3; padding-right: 3; background-color: rgba(0,0,20,0.92); border-color: #00ff88; border-width: 0.15; border-radius: 1.5; align-items: center; gap: 1; }
+  .panel { display: flex; flex-direction: column; padding-top: 2; padding-bottom: 2; padding-left: 3; padding-right: 3; background-color: rgba(0,0,20,0.92); border-color: #00ff88; border-width: 0.15; border-radius: 1.5; align-items: center; gap: 0.8; }
   .title { font-size: 3; color: #00ff88; font-weight: bold; }
-  .section { font-size: 2; color: #00ffff; font-weight: bold; }
-  .text { font-size: 1.3; color: #aaaacc; }
+  .section { font-size: 1.8; color: #00ffff; font-weight: bold; }
+  .text { font-size: 1.2; color: #aaaacc; }
+  .highlight { font-size: 1.2; color: #ffcc00; }
   .btn { padding-top: 0.8; padding-bottom: 0.8; padding-left: 2; padding-right: 2; background-color: rgba(255,0,255,0.12); border-color: #ff00ff; border-width: 0.1; border-radius: 0.8; cursor: pointer; }
   .btn-text { font-size: 1.8; color: #ff00ff; }
 </style>
@@ -10,7 +11,7 @@
   <span class="title">HOW TO PLAY</span>
   <span class="section">Browser Controls</span>
   <span class="text">Left Click + Hold: Charge throw power</span>
-  <span class="text">Release: Throw dart</span>
+  <span class="text">Release: Throw dart at aim point</span>
   <span class="text">Mouse: Aim at dartboard</span>
   <span class="text">ESC: Pause</span>
   <span class="section">VR Controls</span>
@@ -18,11 +19,16 @@
   <span class="text">Release Trigger: Throw dart</span>
   <span class="text">Point Controller: Aim at board</span>
   <span class="text">B Button: Pause</span>
-  <span class="text">A Button: Confirm / Select</span>
-  <span class="section">Game Rules</span>
+  <span class="section">Game Modes</span>
   <span class="text">501: Count down from 501, finish on a double</span>
-  <span class="text">Cricket: Close 15-20 + bulls, score on open numbers</span>
+  <span class="text">Cricket: Close 15-20 + bulls, score on open</span>
   <span class="text">Around the Clock: Hit 1-20 in sequence</span>
   <span class="text">Shanghai: Score on the round number only</span>
+  <span class="text">Free Practice: Throw freely, track averages</span>
+  <span class="section">Features</span>
+  <span class="highlight">Checkout: 501 shows optimal finish routes</span>
+  <span class="highlight">Cricket Board: Live marks scoreboard</span>
+  <span class="highlight">Dart Skins: 6 styles in Settings</span>
+  <span class="highlight">VS Friend: Local 2-player mode</span>
   <div id="btn-back" class="btn"><span class="btn-text">BACK</span></div>
 </div>

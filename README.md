@@ -1,98 +1,108 @@
-# Neon Darts VR
+# 🎯 Neon Darts VR
 
-Holodeck-themed precision darts game built with [IWSDK](https://iwsdk.dev) 0.4.1. Play classic dart games in VR or in your browser.
+A holodeck-style VR darts game built with [IWSDK](https://iwsdk.dev) (Immersive Web SDK). Play classic darts in a glowing neon arena — works in VR headsets and desktop browsers.
 
-**[Play Live](https://ellyz2426.github.io/neon-darts/)**
-
-## Game Modes
-
-- **501** — Count down from 501 to zero. Must finish on a double or bullseye.
-- **Cricket** — Close numbers 15–20 and bulls. Score points on open numbers.
-- **Around the Clock** — Hit 1 through 20 in sequence.
-- **Shanghai** — Score only on the round number. Hit single + double + triple in one turn for instant win!
+🔗 **[Play Live](https://ellyz2426.github.io/neon-darts/)**
 
 ## Features
 
-- Standard dartboard with accurate scoring zones (singles, doubles, triples, inner/outer bull)
-- AI opponent with 3 difficulty levels (Easy, Medium, Hard)
-- Charge-and-release throw mechanic with power bar
-- VR controller support (trigger throw, laser pointer aim)
-- Browser fallback (mouse aim, click-hold throw)
-- 13 PanelUI spatial UI templates (zero HTML DOM)
-- Head-following HUD with score, round, darts remaining
-- 20 achievements with toast notifications
-- Leaderboard and comprehensive stats tracking
-- Procedural Web Audio (throw whoosh, board hit, score chimes, ambient drone)
-- Particle hit effects
-- Holodeck neon environment (grid floor/ceiling, floating wireframe decorations)
-- Dual runtime (XR + browser)
+### 🎮 5 Game Modes
+- **501** — Count down from 501, finish on a double. Checkout calculator shows optimal finish routes.
+- **Cricket** — Close 15–20 and bulls. Score on your opponent's open numbers. Live scoreboard tracks marks.
+- **Around the Clock** — Hit 1 through 20 in sequence.
+- **Shanghai** — Score only on the round number. Hit single + double + triple for an instant win!
+- **Free Practice** — Throw freely with running averages. No opponent, no pressure.
+
+### 🤖 AI Opponent
+- 3 difficulty levels: Easy, Medium, Hard
+- Strategic targeting per mode (T20 setup, cricket priority, etc.)
+
+### 👥 Multiplayer
+- **VS CPU** — Challenge the AI at any difficulty
+- **VS Friend** — Local 2-player mode with turn alternation
+
+### 🎨 Visual Design
+- Holodeck neon environment: glowing grid floor/ceiling, ambient particles, wireframe decorations
+- Accurate dartboard geometry with segment numbers and glowing wire dividers
+- Neon dart trails with skin-specific colors
+- Hit particle effects colored by multiplier
+- 6 dart skins: Neon Classic, Inferno, Frost Bite, Golden Arrow, Phantom, Toxic Surge
+
+### 📊 Tracking & Progress
+- 20 achievements (bullseye, 180, hat trick, streaks, and more)
+- Persistent statistics (games, wins, accuracy, triples, doubles, best turn, etc.)
+- Leaderboard with top 50 results
+- Throw history HUD showing current turn's darts
+- Combo system with streak feedback
+
+### 🎧 Audio
+- Procedural Web Audio: throw whoosh, board thud, score chimes, miss thud
+- Game start/end fanfares, achievement arpeggio, turn change pips
+- Ambient drone (55Hz sine + triangle pad + LFO)
+- Volume controls: Master, SFX, Music
+
+### 🕶️ XR + Browser
+- Full VR controller support: right trigger charge/release, controller aim, B pause
+- Browser fallback: mouse aim, left-click charge/release, ESC pause
+- Dual-runtime: works in VR headsets and desktop/mobile browsers
 
 ## Controls
 
-### Browser
-| Action | Control |
-|--------|---------|
-| Aim | Mouse |
-| Charge throw | Left click + hold |
-| Throw | Release click |
-| Pause | ESC |
+| Action | VR | Browser |
+|--------|----|----- ---|
+| Aim | Point controller at board | Move mouse |
+| Charge | Hold right trigger | Hold left click |
+| Throw | Release trigger | Release click |
+| Pause | B button | ESC key |
 
-### VR
-| Action | Control |
-|--------|---------|
-| Aim | Point controller |
-| Charge throw | Right trigger hold |
-| Throw | Release trigger |
-| Pause | B button |
-| Confirm | A button |
+## Spatial UI
+
+All UI is built with IWSDK PanelUI — 17 `.uikitml` spatial panels, zero HTML DOM overlays. Menus, HUDs, scoreboards, and settings all render correctly in XR.
 
 ## Tech Stack
 
-- IWSDK 0.4.1 (WebXR framework)
-- TypeScript + Vite
-- PanelUI spatial UI system (.uikitml templates)
-- Web Audio API (procedural sound)
-- Dual runtime: VR headset + browser
+- **IWSDK 0.4.1** — WebXR framework
+- **PanelUI / UIKit** — Spatial UI system
+- **Procedural Web Audio API** — All sounds generated at runtime
+- **Three.js** (via @iwsdk/core) — 3D rendering
+
+## Build
+
+```bash
+npm install
+npm run build    # Production build → dist/
+npm run dev      # Development server with IWSDK CLI
+```
 
 ## Project Structure
 
 ```
 src/
-  index.ts        — Entry point, world setup, input handling
-  dartboard.ts    — Board geometry, scoring math
-  darts.ts        — Dart creation, flight, collision
-  game.ts         — Game modes, state machine, rules engine
-  ai.ts           — AI opponent targeting and noise
-  audio.ts        — Procedural Web Audio effects
-  environment.ts  — Holodeck environment setup
-  effects.ts      — Particle effects
-  ui.ts           — PanelUI manager (all panels)
-  stats.ts        — Statistics tracker (localStorage)
-  achievements.ts — 20 achievements system
+  index.ts         — Main entry, input handling, game loop
+  game.ts          — Game state machine, rules for 5 modes
+  dartboard.ts     — Board geometry, scoring math, number labels
+  darts.ts         — Dart throwing, flight physics, trails
+  ai.ts            — AI opponent targeting and noise model
+  ui.ts            — 17 PanelUI panels, all game UI
+  audio.ts         — Procedural Web Audio manager
+  achievements.ts  — 20 achievements with persistence
+  stats.ts         — Statistics tracking with localStorage
+  effects.ts       — Hit particle system
+  checkout.ts      — 501 checkout route calculator
+  skins.ts         — 6 dart skin definitions and manager
+  combo.ts         — Combo/streak tracking system
+  environment.ts   — Holodeck neon environment
 ui/
-  title.uikitml, modeselect.uikitml, difficulty.uikitml,
-  hud.uikitml, power.uikitml, pause.uikitml, gameover.uikitml,
-  leaderboard.uikitml, achievements.uikitml, settings.uikitml,
-  help.uikitml, stats.uikitml, message.uikitml
+  17 .uikitml templates (title, modeselect, difficulty, hud, power,
+  throwhistory, checkout, cricket, announce, pause, gameover,
+  leaderboard, achievements, settings, help, stats, message)
 ```
 
 ## Build Stats
 
-- 11 TypeScript source files
-- 13 .uikitml spatial UI templates
-- Zero HTML DOM UI elements
-- 20 achievements
-- 4 game modes
-- 3 AI difficulty levels
-- Procedural audio (12+ SFX + ambient drone)
+- **Round 1**: 24 files, 3,023 lines — core game with 4 modes, AI, VR controls, 13 panels
+- **Round 2**: 28+ files, 5,800+ lines — practice mode, VS friend, cricket scoreboard, checkout calculator, dart skins, combo system, number labels, 17 panels
 
-## Development
+---
 
-```bash
-npm run dev     # Start dev server
-npm run build   # Production build
-```
-
-## License
-
-Built with IWSDK. For demo/portfolio purposes.
+Built with IWSDK 0.4.1 by [ellyz2426](https://github.com/ellyz2426)
