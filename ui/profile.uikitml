@@ -1,0 +1,138 @@
+<!-- Profile editor panel -->
+<style>
+  .profile-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 2;
+    background-color: rgba(0, 10, 15, 0.92);
+    border-color: #00ddaa;
+    border-width: 0.1;
+    border-radius: 1;
+    gap: 1;
+  }
+  .profile-title {
+    font-size: 3;
+    color: #00ddaa;
+    font-weight: bold;
+    text-align: center;
+  }
+  .profile-avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1;
+    gap: 0.5;
+  }
+  .avatar-display {
+    font-size: 5;
+    color: #00ffff;
+    font-weight: bold;
+    text-align: center;
+  }
+  .profile-name {
+    font-size: 2.5;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+  }
+  .profile-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5;
+  }
+  .profile-label {
+    font-size: 1.6;
+    color: #88bbaa;
+  }
+  .profile-value {
+    font-size: 1.6;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  .profile-btn {
+    font-size: 1.5;
+    color: #ffffff;
+    background-color: rgba(0, 221, 170, 0.2);
+    border-color: #00ddaa;
+    border-width: 0.05;
+    border-radius: 0.5;
+    padding: 0.8;
+    cursor: pointer;
+    text-align: center;
+  }
+  .profile-btn-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 2;
+    padding: 1;
+  }
+  .vol-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.3;
+    gap: 1;
+  }
+  .vol-label {
+    font-size: 1.4;
+    color: #88bbaa;
+  }
+  .vol-bar {
+    font-size: 1.4;
+    color: #00ddaa;
+  }
+  .vol-btn {
+    font-size: 1.6;
+    color: #00ddaa;
+    background-color: rgba(0, 221, 170, 0.15);
+    border-color: #00ddaa;
+    border-width: 0.04;
+    border-radius: 0.3;
+    padding: 0.5;
+    cursor: pointer;
+  }
+</style>
+<div class="profile-panel">
+  <span class="profile-title">PROFILE</span>
+  <div class="profile-avatar">
+    <span id="prof-avatar" class="avatar-display">⬡</span>
+    <span id="prof-name" class="profile-name">Player 1</span>
+  </div>
+  <div class="profile-row">
+    <span class="profile-label">COLOR</span>
+    <button id="btn-prof-color" class="profile-btn" cursor="pointer">CHANGE</button>
+  </div>
+  <div class="profile-row">
+    <span class="profile-label">HAND</span>
+    <span id="prof-hand" class="profile-value">RIGHT</span>
+  </div>
+  <div class="profile-row">
+    <button id="btn-prof-hand" class="profile-btn" cursor="pointer">SWITCH HAND</button>
+  </div>
+  <div class="vol-row">
+    <span class="vol-label">SFX VOLUME</span>
+    <button id="btn-sfx-down" class="vol-btn" cursor="pointer">-</button>
+    <span id="prof-sfx-vol" class="vol-bar">████████░░</span>
+    <button id="btn-sfx-up" class="vol-btn" cursor="pointer">+</button>
+  </div>
+  <div class="vol-row">
+    <span class="vol-label">MUSIC VOLUME</span>
+    <button id="btn-mus-down" class="vol-btn" cursor="pointer">-</button>
+    <span id="prof-mus-vol" class="vol-bar">████░░░░░░</span>
+    <button id="btn-mus-up" class="vol-btn" cursor="pointer">+</button>
+  </div>
+  <div class="profile-row">
+    <span class="profile-label">HAPTICS</span>
+    <span id="prof-haptic" class="profile-value">ON</span>
+  </div>
+  <div class="profile-row">
+    <button id="btn-prof-haptic" class="profile-btn" cursor="pointer">TOGGLE</button>
+  </div>
+  <div class="profile-btn-row">
+    <button id="btn-prof-back" class="profile-btn" cursor="pointer">BACK</button>
+  </div>
+</div>

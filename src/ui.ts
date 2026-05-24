@@ -23,11 +23,15 @@ import { ScoreResult } from './dartboard';
 import { TournamentManager } from './tournament';
 import { DailyChallengeManager } from './daily-challenge';
 import { BoardThemeManager } from './board-themes';
+import { KillerManager } from './killer';
+import { MatchHistoryManager } from './match-history';
+import { ProfileManager } from './profile';
 
 type PanelName = 'title' | 'modeselect' | 'difficulty' | 'hud' | 'pause' | 'gameover'
   | 'leaderboard' | 'achievements' | 'settings' | 'help' | 'stats' | 'message' | 'power'
   | 'throwhistory' | 'cricket' | 'checkout' | 'announce'
-  | 'tournament' | 'tournhud' | 'tournresult' | 'daily' | 'dailyhud';
+  | 'tournament' | 'tournhud' | 'tournresult' | 'daily' | 'dailyhud'
+  | 'killer' | 'history' | 'profile';
 
 function setText(el: any, text: string) {
   if (!el) return;
@@ -50,6 +54,9 @@ export class UIManager {
   private daily: DailyChallengeManager;
   private boardThemeManager: BoardThemeManager;
   public skinManager: DartSkinManager;
+  public killer: KillerManager;
+  public matchHistory: MatchHistoryManager;
+  public profileManager: ProfileManager;
 
   private panels: Map<PanelName, Entity> = new Map();
   private docs: Map<PanelName, UIKitDocument | null> = new Map();
@@ -64,6 +71,13 @@ export class UIManager {
   public onTournamentNext: (() => void) | null = null;
   public onTournamentQuit: (() => void) | null = null;
   public onDailyStart: (() => void) | null = null;
+  public onKillerStart: (() => void) | null = null;
+  public onRematch: (() => void) | null = null;
+
+  private gameStartTime = 0;
+  private totalDartsThisGame = 0;
+  private highThrowThisGame = 0;
+  private totalScoreThisGame = 0;
 
   constructor(
     world: World, game: GameManager, dartManager: DartManager,
@@ -83,6 +97,13 @@ export class UIManager {
     this.daily = daily;
     this.boardThemeManager = boardThemeManager;
     this.skinManager = new DartSkinManager();
+    this.killer = new KillerManager();
+    this.matchHistory = new MatchHistoryManager();
+    this.profileManager = new ProfileManager();
+
+    // Apply saved volume settings
+    this.audio.setSfxVolume(this.profileManager.profile.soundVolume);
+    this.audio.setMusicVolume(this.profileManager.profile.musicVolume);
 
     this.createPanels();
     this.setupAchievementToast();
@@ -228,6 +249,24 @@ export class UIManager {
       offsetPosition: [-0.28, -0.2, -0.5],
       maxWidth: 0.18, maxHeight: 0.08,
     });
+
+    // Killer mode panel
+    this.createPanel('killer', '/ui/killer.json', {
+      position: new Vector3(0.5, 1.7, -1.3),
+      maxWidth: 0.4, maxHeight: 0.6,
+    });
+
+    // Match history panel
+    this.createPanel('history', '/ui/history.json', {
+      position: new Vector3(0, 1.7, -1.5),
+      maxWidth: 0.7, maxHeight: 1.0,
+    });
+
+    // Profile panel
+    this.createPanel('profile', '/ui/profile.json', {
+      position: new Vector3(0, 1.7, -1.5),
+      maxWidth: 0.6, maxHeight: 0.9,
+    });
   }
 
   private createPanel(name: PanelName, config: string, opts: {
@@ -239,7 +278,7 @@ export class UIManager {
   }) {
     const entity = this.world.createTransformEntity(undefined, { persistent: true });
 
-    if (opts.position) {
+    if (opts.position && entity.object3D) {
       entity.object3D.position.copy(opts.position);
     }
 
@@ -259,7 +298,7 @@ export class UIManager {
       });
     }
 
-    entity.object3D.visible = false;
+    if (entity.object3D) entity.object3D.visible = false;
     this.panels.set(name, entity);
     this.docs.set(name, null);
   }
@@ -310,6 +349,18 @@ export class UIManager {
           this.updateStatsPanel();
           this.showPanel('stats');
         });
+        doc.getElementById('btn-profile')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.updateProfileDisplay();
+          this.showPanel('profile');
+        });
+        doc.getElementById('btn-history')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.updateHistoryDisplay();
+          this.showPanel('history');
+        });
+        // Show player name on title
+        this.updateTitlePlayerName();
         break;
       }
       case 'modeselect': {
@@ -348,6 +399,11 @@ export class UIManager {
           this.audio.playButtonClick();
           this.showDailyPanel();
         });
+        doc.getElementById('btn-killer')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.game.mode = GameMode.Killer;
+          this.showPanel('difficulty');
+        });
         doc.getElementById('btn-mode-back')?.addEventListener('click', () => {
           this.audio.playButtonClick();
           this.showPanel('title');
@@ -355,34 +411,54 @@ export class UIManager {
         break;
       }
       case 'difficulty': {
+        const startGameWithAI = (diff: AIDifficulty) => {
+          this.ai.difficulty = diff;
+          this.throwHistory = [];
+          this.gameStartTime = Date.now();
+          this.totalDartsThisGame = 0;
+          this.highThrowThisGame = 0;
+          this.totalScoreThisGame = 0;
+          if (this.game.mode === GameMode.Killer) {
+            const playerName = this.profileManager.nickname;
+            this.killer.startGame([playerName, 'CPU'], [false, true]);
+            this.game.startGame(GameMode.Killer, true);
+          } else {
+            this.game.startGame(this.game.mode, true);
+          }
+          this.game.players[0].name = this.profileManager.nickname;
+          this.showPanel('hud');
+          if (this.game.mode === GameMode.Killer) {
+            this.updateKillerPanel();
+          }
+          this.showTurnAnnouncement();
+        };
         doc.getElementById('btn-easy')?.addEventListener('click', () => {
           this.audio.playButtonClick();
-          this.ai.difficulty = AIDifficulty.Easy;
-          this.throwHistory = [];
-          this.game.startGame(this.game.mode, true);
-          this.showPanel('hud');
-          this.showTurnAnnouncement();
+          startGameWithAI(AIDifficulty.Easy);
         });
         doc.getElementById('btn-medium')?.addEventListener('click', () => {
           this.audio.playButtonClick();
-          this.ai.difficulty = AIDifficulty.Medium;
-          this.throwHistory = [];
-          this.game.startGame(this.game.mode, true);
-          this.showPanel('hud');
-          this.showTurnAnnouncement();
+          startGameWithAI(AIDifficulty.Medium);
         });
         doc.getElementById('btn-hard')?.addEventListener('click', () => {
           this.audio.playButtonClick();
-          this.ai.difficulty = AIDifficulty.Hard;
-          this.throwHistory = [];
-          this.game.startGame(this.game.mode, true);
-          this.showPanel('hud');
-          this.showTurnAnnouncement();
+          startGameWithAI(AIDifficulty.Hard);
         });
         doc.getElementById('btn-friend')?.addEventListener('click', () => {
           this.audio.playButtonClick();
           this.throwHistory = [];
-          this.game.startGame(this.game.mode, false);
+          this.gameStartTime = Date.now();
+          this.totalDartsThisGame = 0;
+          this.highThrowThisGame = 0;
+          this.totalScoreThisGame = 0;
+          if (this.game.mode === GameMode.Killer) {
+            const p1 = this.profileManager.nickname;
+            this.killer.startGame([p1, 'Player 2'], [false, false]);
+            this.game.startGame(GameMode.Killer, false);
+          } else {
+            this.game.startGame(this.game.mode, false);
+          }
+          this.game.players[0].name = this.profileManager.nickname;
           this.showPanel('hud');
           this.showTurnAnnouncement();
         });
@@ -410,12 +486,24 @@ export class UIManager {
       }
       case 'gameover': {
         doc.getElementById('btn-rematch')?.addEventListener('click', () => {
-          this.audio.playButtonClick();
+          this.audio.playRematch();
           this.dartManager.clearDarts();
           this.throwHistory = [];
+          this.gameStartTime = Date.now();
+          this.totalDartsThisGame = 0;
+          this.highThrowThisGame = 0;
+          this.totalScoreThisGame = 0;
+          if (this.game.mode === GameMode.Killer) {
+            const p1 = this.profileManager.nickname;
+            const names = this.killer.players.map(p => p.name);
+            const ais = this.killer.players.map(p => p.isAI);
+            this.killer.startGame(names, ais);
+          }
           this.game.startGame(this.game.mode, this.game.vsAI);
+          this.game.players[0].name = this.profileManager.nickname;
           this.showPanel('hud');
           this.showTurnAnnouncement();
+          if (this.onRematch) this.onRematch();
         });
         doc.getElementById('btn-menu')?.addEventListener('click', () => {
           this.audio.playButtonClick();
@@ -437,27 +525,27 @@ export class UIManager {
       }
       case 'settings': {
         doc.getElementById('btn-master-up')?.addEventListener('click', () => {
-          this.audio.setVolume('master', this.audio.masterVolume + 0.1);
+          this.audio.setMasterVolume(this.audio.masterVolume + 0.1);
           this.updateSettingsDisplay();
         });
         doc.getElementById('btn-master-down')?.addEventListener('click', () => {
-          this.audio.setVolume('master', this.audio.masterVolume - 0.1);
+          this.audio.setMasterVolume(this.audio.masterVolume - 0.1);
           this.updateSettingsDisplay();
         });
         doc.getElementById('btn-sfx-up')?.addEventListener('click', () => {
-          this.audio.setVolume('sfx', this.audio.sfxVolume + 0.1);
+          this.audio.setSfxVolume(this.audio.sfxVolume + 0.1);
           this.updateSettingsDisplay();
         });
         doc.getElementById('btn-sfx-down')?.addEventListener('click', () => {
-          this.audio.setVolume('sfx', this.audio.sfxVolume - 0.1);
+          this.audio.setSfxVolume(this.audio.sfxVolume - 0.1);
           this.updateSettingsDisplay();
         });
         doc.getElementById('btn-music-up')?.addEventListener('click', () => {
-          this.audio.setVolume('music', this.audio.musicVolume + 0.1);
+          this.audio.setMusicVolume(this.audio.musicVolume + 0.1);
           this.updateSettingsDisplay();
         });
         doc.getElementById('btn-music-down')?.addEventListener('click', () => {
-          this.audio.setVolume('music', this.audio.musicVolume - 0.1);
+          this.audio.setMusicVolume(this.audio.musicVolume - 0.1);
           this.updateSettingsDisplay();
         });
         doc.getElementById('btn-skin-next')?.addEventListener('click', () => {
@@ -521,58 +609,130 @@ export class UIManager {
         });
         break;
       }
+      case 'killer': {
+        doc.getElementById('btn-killer-quit')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.dartManager.clearDarts();
+          this.game.setState(GameState.Title);
+          this.showPanel('title');
+        });
+        break;
+      }
+      case 'history': {
+        doc.getElementById('btn-history-back')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.showPanel('title');
+        });
+        break;
+      }
+      case 'profile': {
+        doc.getElementById('btn-prof-color')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.profileManager.cycleColor();
+          this.updateProfileDisplay();
+        });
+        doc.getElementById('btn-prof-hand')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.profileManager.toggleHand();
+          this.updateProfileDisplay();
+        });
+        doc.getElementById('btn-sfx-up')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.profileManager.setSoundVolume(this.profileManager.profile.soundVolume + 0.1);
+          this.audio.setSfxVolume(this.profileManager.profile.soundVolume);
+          this.updateProfileDisplay();
+        });
+        doc.getElementById('btn-sfx-down')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.profileManager.setSoundVolume(this.profileManager.profile.soundVolume - 0.1);
+          this.audio.setSfxVolume(this.profileManager.profile.soundVolume);
+          this.updateProfileDisplay();
+        });
+        doc.getElementById('btn-mus-up')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.profileManager.setMusicVolume(this.profileManager.profile.musicVolume + 0.1);
+          this.audio.setMusicVolume(this.profileManager.profile.musicVolume);
+          this.updateProfileDisplay();
+        });
+        doc.getElementById('btn-mus-down')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.profileManager.setMusicVolume(this.profileManager.profile.musicVolume - 0.1);
+          this.audio.setMusicVolume(this.profileManager.profile.musicVolume);
+          this.updateProfileDisplay();
+        });
+        doc.getElementById('btn-prof-haptic')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.profileManager.toggleHaptic();
+          this.updateProfileDisplay();
+        });
+        doc.getElementById('btn-prof-back')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.showPanel('title');
+        });
+        break;
+      }
     }
   }
 
   showPanel(name: PanelName | 'hud') {
-    const hudPanels: PanelName[] = ['hud', 'power', 'message', 'throwhistory', 'checkout', 'cricket', 'announce', 'tournhud', 'dailyhud'];
+    const hudPanels: PanelName[] = ['hud', 'power', 'message', 'throwhistory', 'checkout', 'cricket', 'announce', 'tournhud', 'dailyhud', 'killer'];
 
     for (const [pName, entity] of this.panels) {
       if (hudPanels.includes(pName)) continue;
-      entity.object3D.visible = false;
+      entity.object3D!.visible = false;
     }
 
     if (name === 'hud') {
       const hud = this.panels.get('hud');
-      if (hud) hud.object3D.visible = true;
+      if (hud) hud.object3D!.visible = true;
 
       const hist = this.panels.get('throwhistory');
-      if (hist) hist.object3D.visible = true;
+      if (hist) hist.object3D!.visible = true;
 
       if (this.game.mode === GameMode.FiveOhOne) {
         this.updateCheckout();
       } else {
         const co = this.panels.get('checkout');
-        if (co) co.object3D.visible = false;
+        if (co) co.object3D!.visible = false;
       }
 
       if (this.game.mode === GameMode.Cricket) {
         const cric = this.panels.get('cricket');
-        if (cric) cric.object3D.visible = true;
+        if (cric) cric.object3D!.visible = true;
         this.updateCricketScoreboard();
       } else {
         const cric = this.panels.get('cricket');
-        if (cric) cric.object3D.visible = false;
+        if (cric) cric.object3D!.visible = false;
       }
 
       // Show tournament HUD if in tournament
       if (this.tournament.state.active && !this.tournament.state.completed) {
         const thud = this.panels.get('tournhud');
-        if (thud) thud.object3D.visible = true;
+        if (thud) thud.object3D!.visible = true;
         this.updateTournamentHud();
       } else {
         const thud = this.panels.get('tournhud');
-        if (thud) thud.object3D.visible = false;
+        if (thud) thud.object3D!.visible = false;
       }
 
       // Show daily HUD if in daily challenge
       if (this.daily.active) {
         const dhud = this.panels.get('dailyhud');
-        if (dhud) dhud.object3D.visible = true;
+        if (dhud) dhud.object3D!.visible = true;
         this.updateDailyHud();
       } else {
         const dhud = this.panels.get('dailyhud');
-        if (dhud) dhud.object3D.visible = false;
+        if (dhud) dhud.object3D!.visible = false;
+      }
+
+      // Show killer panel if in killer mode
+      if (this.game.mode === GameMode.Killer) {
+        const kp = this.panels.get('killer');
+        if (kp) kp.object3D!.visible = true;
+        this.updateKillerPanel();
+      } else {
+        const kp = this.panels.get('killer');
+        if (kp) kp.object3D!.visible = false;
       }
 
       this.updateGameState();
@@ -581,17 +741,17 @@ export class UIManager {
 
       for (const [pName, entity] of this.panels) {
         if (!hudPanels.includes(pName)) {
-          entity.object3D.visible = false;
+          entity.object3D!.visible = false;
         }
       }
     } else {
       for (const n of hudPanels) {
         const p = this.panels.get(n);
-        if (p) p.object3D.visible = false;
+        if (p) p.object3D!.visible = false;
       }
 
       const panel = this.panels.get(name);
-      if (panel) panel.object3D.visible = true;
+      if (panel) panel.object3D!.visible = true;
       this.currentPanel = name;
 
       if (name === 'gameover') this.updateGameOverPanel();
@@ -601,7 +761,7 @@ export class UIManager {
 
   showPowerBar(visible: boolean) {
     const power = this.panels.get('power');
-    if (power) power.object3D.visible = visible;
+    if (power) power.object3D!.visible = visible;
   }
 
   updatePower(power: number) {
@@ -660,13 +820,13 @@ export class UIManager {
 
     const player = this.game.players[this.game.currentPlayer];
     if (!player) {
-      co.object3D.visible = false;
+      co.object3D!.visible = false;
       return;
     }
 
     const remaining = player.remaining501 || 0;
     if (remaining <= 170 && remaining >= 2 && isCheckoutPossible(remaining)) {
-      co.object3D.visible = true;
+      co.object3D!.visible = true;
       const doc = this.getDoc('checkout');
       if (doc) {
         setText(doc.getElementById('co-remaining'), `Remaining: ${remaining}`);
@@ -674,7 +834,7 @@ export class UIManager {
         setText(doc.getElementById('co-route'), route || '---');
       }
     } else {
-      co.object3D.visible = false;
+      co.object3D!.visible = false;
     }
   }
 
@@ -714,7 +874,7 @@ export class UIManager {
     if (!player) return;
 
     const announce = this.panels.get('announce');
-    if (announce) announce.object3D.visible = true;
+    if (announce) announce.object3D!.visible = true;
 
     const doc = this.getDoc('announce');
     if (doc) {
@@ -736,23 +896,6 @@ export class UIManager {
     setText(doc.getElementById('hud-round'), this.game.getRoundInfo());
     setText(doc.getElementById('hud-darts'), `Darts: ${3 - this.game.dartsThisRound}/3`);
     setText(doc.getElementById('hud-turn'), `Turn: ${this.game.turnScore}`);
-  }
-
-  private updateGameOverPanel() {
-    const doc = this.getDoc('gameover');
-    if (!doc) return;
-
-    const winner = this.game.getWinner();
-    const winnerName = this.game.players[winner - 1]?.name || 'Player';
-    setText(doc.getElementById('go-winner'), `${winnerName} WINS!`);
-    setText(doc.getElementById('go-mode'), this.game.getModeLabel());
-
-    const p1 = this.game.getPlayerDisplay(0);
-    const p2 = this.game.players.length > 1 ? this.game.getPlayerDisplay(1) : '';
-    setText(doc.getElementById('go-p1-score'), `${this.game.players[0]?.name}: ${p1}`);
-    if (this.game.players.length > 1) {
-      setText(doc.getElementById('go-p2-score'), `${this.game.players[1]?.name}: ${p2}`);
-    }
   }
 
   private updateLeaderboard() {
@@ -820,7 +963,7 @@ export class UIManager {
 
   showMessage(text: string, duration = 2.0) {
     const panel = this.panels.get('message');
-    if (panel) panel.object3D.visible = true;
+    if (panel) panel.object3D!.visible = true;
     this.messageTimer = duration;
 
     const doc = this.getDoc('message');
@@ -892,7 +1035,7 @@ export class UIManager {
 
   showDailyHud(visible: boolean) {
     const dhud = this.panels.get('dailyhud');
-    if (dhud) dhud.object3D.visible = visible;
+    if (dhud) dhud.object3D!.visible = visible;
   }
 
   updateDailyHud() {
@@ -916,7 +1059,7 @@ export class UIManager {
       this.messageTimer -= dt;
       if (this.messageTimer <= 0) {
         const panel = this.panels.get('message');
-        if (panel) panel.object3D.visible = false;
+        if (panel) panel.object3D!.visible = false;
       }
     }
 
@@ -924,7 +1067,7 @@ export class UIManager {
       this.announceTimer -= dt;
       if (this.announceTimer <= 0) {
         const panel = this.panels.get('announce');
-        if (panel) panel.object3D.visible = false;
+        if (panel) panel.object3D!.visible = false;
       }
     }
 
@@ -933,5 +1076,152 @@ export class UIManager {
         this.getDoc(name as PanelName);
       }
     }
+  }
+
+  // ===== Killer mode =====
+  updateKillerPanel() {
+    const doc = this.getDoc('killer');
+    if (!doc) return;
+
+    setText(doc.getElementById('killer-round'), `Round ${this.killer.round}`);
+
+    for (let i = 0; i < 2 && i < this.killer.players.length; i++) {
+      const p = this.killer.players[i];
+      setText(doc.getElementById(`kp${i + 1}-name`), p.name + (p.isKiller ? ' ⚔' : ''));
+      setText(doc.getElementById(`kp${i + 1}-num`), `#${p.targetNumber}`);
+      const hearts = p.eliminated ? 'ELIMINATED'
+        : '❤'.repeat(p.lives) + '○'.repeat(Math.max(0, 5 - p.lives));
+      setText(doc.getElementById(`kp${i + 1}-lives`), hearts);
+    }
+
+    setText(doc.getElementById('killer-action'), this.killer.lastAction);
+  }
+
+  handleKillerThrow(result: ScoreResult) {
+    const action = this.killer.recordThrow(result);
+    this.updateKillerPanel();
+
+    if (action.includes('ELIMINATED')) {
+      this.audio.playElimination();
+    } else if (action.includes('KILLER') || action.includes('gained')) {
+      this.audio.playLifeGain();
+    } else if (action.includes('hit')) {
+      this.audio.playKill();
+    }
+  }
+
+  // ===== Match History =====
+  updateHistoryDisplay() {
+    const doc = this.getDoc('history');
+    if (!doc) return;
+
+    const stats = this.matchHistory.getStats();
+    setText(doc.getElementById('hist-total'), `${stats.totalGames}`);
+    setText(doc.getElementById('hist-wins'), `${stats.wins}`);
+    setText(doc.getElementById('hist-winrate'), `${stats.winRate}%`);
+    setText(doc.getElementById('hist-favmode'), stats.favoriteMode);
+
+    const records = this.matchHistory.getRecords(8);
+    const noMatches = doc.getElementById('hist-no-matches');
+
+    if (records.length === 0) {
+      if (noMatches) setText(noMatches, 'No matches yet. Start playing!');
+    } else {
+      if (noMatches) setText(noMatches, '');
+    }
+
+    for (let i = 0; i < 8; i++) {
+      const el = doc.getElementById(`hist-row-${i}`);
+      if (!el) continue;
+      if (i < records.length) {
+        const r = records[i];
+        const icon = r.result === 'win' ? 'W' : r.result === 'loss' ? 'L' : 'D';
+        const dateStr = this.matchHistory.formatDate(r.date);
+        setText(el, `${icon} | ${r.mode} | vs ${r.opponentName} | Avg: ${r.avgScore} | ${dateStr}`);
+      } else {
+        setText(el, '');
+      }
+    }
+  }
+
+  recordMatchResult(won: boolean) {
+    const p1 = this.game.players[0];
+    const p2 = this.game.players[1];
+    const duration = Math.round((Date.now() - this.gameStartTime) / 1000);
+    const avgScore = this.totalDartsThisGame > 0
+      ? Math.round((this.totalScoreThisGame / this.totalDartsThisGame) * 3)
+      : 0;
+
+    this.matchHistory.addRecord({
+      mode: this.game.getModeLabel(),
+      result: won ? 'win' : 'loss',
+      playerScore: this.game.getPlayerDisplay(0),
+      opponentScore: p2 ? this.game.getPlayerDisplay(1) : '',
+      opponentName: p2?.name || 'None',
+      dartsThrown: this.totalDartsThisGame,
+      avgScore,
+      highThrow: this.highThrowThisGame,
+      duration,
+    });
+  }
+
+  trackThrowForStats(result: ScoreResult) {
+    this.totalDartsThisGame++;
+    this.totalScoreThisGame += result.total;
+    if (result.total > this.highThrowThisGame) {
+      this.highThrowThisGame = result.total;
+    }
+  }
+
+  // ===== Profile =====
+  updateProfileDisplay() {
+    const doc = this.getDoc('profile');
+    if (!doc) return;
+
+    const p = this.profileManager.profile;
+    setText(doc.getElementById('prof-name'), p.nickname);
+    setText(doc.getElementById('prof-hand'), p.preferredHand.toUpperCase());
+    setText(doc.getElementById('prof-haptic'), p.hapticEnabled ? 'ON' : 'OFF');
+
+    const sfxBars = Math.round(p.soundVolume * 10);
+    setText(doc.getElementById('prof-sfx-vol'), '█'.repeat(sfxBars) + '░'.repeat(10 - sfxBars));
+
+    const musBars = Math.round(p.musicVolume * 10);
+    setText(doc.getElementById('prof-mus-vol'), '█'.repeat(musBars) + '░'.repeat(10 - musBars));
+  }
+
+  updateTitlePlayerName() {
+    const doc = this.getDoc('title');
+    if (!doc) return;
+    const nameEl = doc.getElementById('title-player-name');
+    if (nameEl) {
+      setText(nameEl, `Welcome, ${this.profileManager.nickname}`);
+    }
+  }
+
+  // ===== Enhanced Game Over =====
+  updateGameOverPanel() {
+    const doc = this.getDoc('gameover');
+    if (!doc) return;
+
+    const winner = this.game.getWinner();
+    const won = winner === 1;
+
+    setText(doc.getElementById('go-winner'), won ? 'VICTORY!' : 'DEFEAT');
+    setText(doc.getElementById('go-subtitle'), won ? 'Well played!' : 'Better luck next time');
+    setText(doc.getElementById('go-mode'), this.game.getModeLabel());
+    setText(doc.getElementById('go-p1-score'),
+      `${this.game.players[0]?.name || 'Player 1'}: ${this.game.getPlayerDisplay(0)}`);
+    if (this.game.players.length > 1) {
+      setText(doc.getElementById('go-p2-score'),
+        `${this.game.players[1]?.name || 'CPU'}: ${this.game.getPlayerDisplay(1)}`);
+    }
+
+    // Enhanced stats
+    setText(doc.getElementById('go-darts'), `${this.totalDartsThisGame}`);
+    const avg = this.totalDartsThisGame > 0
+      ? Math.round((this.totalScoreThisGame / this.totalDartsThisGame) * 3) : 0;
+    setText(doc.getElementById('go-avg'), `${avg}`);
+    setText(doc.getElementById('go-high'), `${this.highThrowThisGame}`);
   }
 }

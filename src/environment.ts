@@ -31,25 +31,25 @@ export function createEnvironment(world: World) {
 
   // Ambient light
   const ambient = new AmbientLight(0x222244, 0.5);
-  world.scene.add(ambient);
+  world.scene.add(ambient as any);
 
   // Key lights
   const keyLight = new DirectionalLight(0x88aaff, 0.3);
   keyLight.position.set(2, 4, 1);
-  world.scene.add(keyLight);
+  world.scene.add(keyLight as any);
 
   // Board spotlight
   const boardLight = new PointLight(0x00ffff, 2, 5);
   boardLight.position.set(0, 2.5, -2.2);
-  world.scene.add(boardLight);
+  world.scene.add(boardLight as any);
 
   const boardLight2 = new PointLight(0xff00ff, 1, 4);
   boardLight2.position.set(-1, 2, -2);
-  world.scene.add(boardLight2);
+  world.scene.add(boardLight2 as any);
 
   const boardLight3 = new PointLight(0x00ff88, 1, 4);
   boardLight3.position.set(1, 2, -2);
-  world.scene.add(boardLight3);
+  world.scene.add(boardLight3 as any);
 
   // Neon grid floor
   const floorGeo = new PlaneGeometry(30, 30);

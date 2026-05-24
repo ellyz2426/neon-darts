@@ -1,22 +1,36 @@
 <style>
-  .panel { display: flex; flex-direction: column; padding-top: 3; padding-bottom: 3; padding-left: 4; padding-right: 4; background-color: rgba(0,0,20,0.92); border-color: #00ffff; border-width: 0.15; border-radius: 1.5; align-items: center; gap: 2; }
+  .panel { display: flex; flex-direction: column; padding-top: 3; padding-bottom: 3; padding-left: 4; padding-right: 4; background-color: rgba(0,0,20,0.92); border-color: #00ffff; border-width: 0.15; border-radius: 1.5; align-items: center; gap: 1.5; }
   .title { font-size: 5; color: #00ffff; font-weight: bold; }
   .subtitle { font-size: 2; color: #888899; }
+  .player-name { font-size: 1.6; color: #00ddaa; }
   .btn { padding-top: 1; padding-bottom: 1; padding-left: 3; padding-right: 3; background-color: rgba(0,255,255,0.15); border-color: #00ffff; border-width: 0.1; border-radius: 0.8; cursor: pointer; }
   .btn-text { font-size: 2.2; color: #00ffff; font-weight: bold; }
+  .btn-small { padding-top: 0.7; padding-bottom: 0.7; padding-left: 2; padding-right: 2; background-color: rgba(0,255,255,0.10); border-color: #00ffff; border-width: 0.08; border-radius: 0.6; cursor: pointer; }
+  .btn-small-text { font-size: 1.6; color: #00ffff; }
+  .btn-profile { padding-top: 0.7; padding-bottom: 0.7; padding-left: 2; padding-right: 2; background-color: rgba(0,221,170,0.15); border-color: #00ddaa; border-width: 0.08; border-radius: 0.6; cursor: pointer; }
+  .btn-profile-text { font-size: 1.6; color: #00ddaa; }
+  .btn-history { padding-top: 0.7; padding-bottom: 0.7; padding-left: 2; padding-right: 2; background-color: rgba(68,136,255,0.15); border-color: #4488ff; border-width: 0.08; border-radius: 0.6; cursor: pointer; }
+  .btn-history-text { font-size: 1.6; color: #4488ff; }
   .row { display: flex; flex-direction: row; gap: 2; }
+  .version { font-size: 1; color: #334455; }
 </style>
 <div class="panel">
   <span class="title">NEON DARTS</span>
   <span class="subtitle">VR Precision Darts</span>
+  <span id="title-player-name" class="player-name"></span>
   <div id="btn-play" class="btn"><span class="btn-text">PLAY</span></div>
   <div class="row">
-    <div id="btn-leaderboard" class="btn"><span class="btn-text">SCORES</span></div>
-    <div id="btn-achievements" class="btn"><span class="btn-text">TROPHIES</span></div>
+    <div id="btn-leaderboard" class="btn-small"><span class="btn-small-text">SCORES</span></div>
+    <div id="btn-achievements" class="btn-small"><span class="btn-small-text">TROPHIES</span></div>
   </div>
   <div class="row">
-    <div id="btn-stats" class="btn"><span class="btn-text">STATS</span></div>
-    <div id="btn-settings" class="btn"><span class="btn-text">SETTINGS</span></div>
+    <div id="btn-stats" class="btn-small"><span class="btn-small-text">STATS</span></div>
+    <div id="btn-settings" class="btn-small"><span class="btn-small-text">SETTINGS</span></div>
   </div>
-  <div id="btn-help" class="btn"><span class="btn-text">HELP</span></div>
+  <div class="row">
+    <div id="btn-profile" class="btn-profile"><span class="btn-profile-text">PROFILE</span></div>
+    <div id="btn-history" class="btn-history"><span class="btn-history-text">HISTORY</span></div>
+    <div id="btn-help" class="btn-small"><span class="btn-small-text">HELP</span></div>
+  </div>
+  <span class="version">v2.0</span>
 </div>

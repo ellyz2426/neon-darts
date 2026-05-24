@@ -1,0 +1,89 @@
+<!-- Killer mode status panel -->
+<style>
+  .killer-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 2;
+    background-color: rgba(15, 0, 0, 0.92);
+    border-color: #ff3333;
+    border-width: 0.1;
+    border-radius: 1;
+    gap: 1;
+  }
+  .killer-title {
+    font-size: 3;
+    color: #ff3333;
+    font-weight: bold;
+    text-align: center;
+  }
+  .killer-subtitle {
+    font-size: 1.5;
+    color: #ff8888;
+    text-align: center;
+  }
+  .player-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.5;
+    gap: 1;
+  }
+  .player-name {
+    font-size: 1.8;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  .player-number {
+    font-size: 1.5;
+    color: #ff8888;
+  }
+  .player-lives {
+    font-size: 1.8;
+    color: #ff3333;
+  }
+  .player-status {
+    font-size: 1.4;
+    color: #888888;
+  }
+  .killer-action {
+    font-size: 1.8;
+    color: #ffff00;
+    text-align: center;
+    padding: 1;
+  }
+  .killer-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 2;
+    padding: 1;
+  }
+  .killer-btn {
+    font-size: 1.8;
+    color: #ffffff;
+    background-color: rgba(255, 50, 50, 0.3);
+    border-color: #ff3333;
+    border-width: 0.05;
+    border-radius: 0.5;
+    padding: 1;
+    cursor: pointer;
+  }
+</style>
+<div class="killer-panel">
+  <span class="killer-title">KILLER</span>
+  <span id="killer-round" class="killer-subtitle">Round 1</span>
+  <div class="player-row">
+    <span id="kp1-name" class="player-name">Player 1</span>
+    <span id="kp1-num" class="player-number">#20</span>
+    <span id="kp1-lives" class="player-lives">-----</span>
+  </div>
+  <div class="player-row">
+    <span id="kp2-name" class="player-name">CPU</span>
+    <span id="kp2-num" class="player-number">#15</span>
+    <span id="kp2-lives" class="player-lives">-----</span>
+  </div>
+  <span id="killer-action" class="killer-action"></span>
+  <div class="killer-buttons">
+    <button id="btn-killer-quit" class="killer-btn" cursor="pointer">QUIT</button>
+  </div>
+</div>

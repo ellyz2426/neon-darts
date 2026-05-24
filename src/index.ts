@@ -59,6 +59,10 @@ import { AimCursor } from './aim-cursor';
 import { TournamentManager } from './tournament';
 import { DailyChallengeManager } from './daily-challenge';
 import { BoardThemeManager } from './board-themes';
+import { ParticleSystem } from './particles';
+import { KillerManager } from './killer';
+import { MatchHistoryManager } from './match-history';
+import { ProfileManager } from './profile';
 
 async function main() {
   const container = document.getElementById('app') as HTMLDivElement;
@@ -92,6 +96,9 @@ async function main() {
 
   // Create environment
   createEnvironment(world);
+
+  // Ambient particles
+  const particles = new ParticleSystem(world);
 
   // Create dartboard at standard distance (2.37m away, center at 1.73m height)
   const boardGroup = createDartboard(world);
@@ -200,6 +207,14 @@ async function main() {
 
   // Dart hit callback
   dartManager.onDartHit = (result: ScoreResult) => {
+    // Track for match history
+    ui.trackThrowForStats(result);
+
+    // Handle Killer mode specifically
+    if (game.mode === GameMode.Killer) {
+      ui.handleKillerThrow(result);
+    }
+
     game.recordThrow(result);
     ui.recordThrow(result);
     ui.updateGameState();
@@ -224,6 +239,17 @@ async function main() {
 
     // Track stats
     stats.recordThrow(result.total, result.multiplier, result.segment);
+
+    // Particle burst for high-value hits
+    if (result.multiplier === 3 || result.segment === 25) {
+      const hitPos = new Vector3(
+        boardGroup.position.x + result.x,
+        boardGroup.position.y + result.y,
+        boardGroup.position.z + 0.05
+      );
+      const burstColor = result.segment === 25 ? '#ffff00' : '#ff00ff';
+      particles.burst(hitPos, burstColor, result.multiplier === 3 ? 20 : 15);
+    }
 
     // Daily challenge tracking
     if (daily.active) {
@@ -270,12 +296,28 @@ async function main() {
       }
 
       setTimeout(() => {
+        // Handle killer turn end
+        if (game.mode === GameMode.Killer) {
+          ui.killer.endTurn();
+          ui.updateKillerPanel();
+        }
+
         game.endTurn();
         dartManager.clearDarts();
         ui.clearThrowHistory();
 
-        if (game.isGameOver()) {
-          const won = game.getWinner() === 1;
+        if (game.isGameOver() || (game.mode === GameMode.Killer && ui.killer.gameOver)) {
+          const won = game.mode === GameMode.Killer
+            ? (ui.killer.winner?.name === ui.profileManager.nickname)
+            : game.getWinner() === 1;
+
+          // Record match history
+          ui.recordMatchResult(won);
+
+          // Particle celebration burst on win
+          if (won) {
+            particles.burst(boardGroup.position.clone(), '#00ff88', 30);
+          }
 
           // Tournament handling
           if (tournament.state.active) {
@@ -462,6 +504,7 @@ async function main() {
     dartManager.update(dt);
     scorePopups.update(dt);
     aimCursor.update(dt);
+    particles.update(dt);
     ui.update(dt);
 
     // Animate environment elements (gentle rotation)

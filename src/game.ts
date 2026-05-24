@@ -10,6 +10,7 @@ export enum GameMode {
   AroundTheClock = 'around-the-clock',
   Shanghai = 'shanghai',
   Practice = 'practice',
+  Killer = 'killer',
 }
 
 export enum GameState {
@@ -330,6 +331,7 @@ export class GameManager {
       case GameMode.AroundTheClock: return 'AROUND THE CLOCK';
       case GameMode.Shanghai: return 'SHANGHAI';
       case GameMode.Practice: return 'PRACTICE';
+      case GameMode.Killer: return 'KILLER';
     }
   }
 

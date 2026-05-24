@@ -11,6 +11,21 @@ export class AudioManager {
   sfxVolume = 0.8;
   musicVolume = 0.3;
 
+  setSfxVolume(vol: number) {
+    this.sfxVolume = Math.max(0, Math.min(1, vol));
+    if (this.sfxGain) this.sfxGain.gain.value = this.sfxVolume;
+  }
+
+  setMusicVolume(vol: number) {
+    this.musicVolume = Math.max(0, Math.min(1, vol));
+    if (this.musicGain) this.musicGain.gain.value = this.musicVolume;
+  }
+
+  setMasterVolume(vol: number) {
+    this.masterVolume = Math.max(0, Math.min(1, vol));
+    if (this.masterGain) this.masterGain.gain.value = this.masterVolume;
+  }
+
   private ensureContext() {
     if (!this.ctx) {
       this.ctx = new AudioContext();
@@ -323,5 +338,88 @@ export class AudioManager {
     osc2.start(ctx.currentTime + 0.06);
     osc.stop(ctx.currentTime + 0.1);
     osc2.stop(ctx.currentTime + 0.16);
+  }
+
+  playKill() {
+    const ctx = this.ensureContext();
+    if (!this.sfxGain) return;
+
+    // Aggressive descending tone — "kill" hit
+    const osc = ctx.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.value = 600;
+    osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.3);
+
+    const gain = ctx.createGain();
+    gain.gain.value = 0.12;
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.4);
+  }
+
+  playElimination() {
+    const ctx = this.ensureContext();
+    if (!this.sfxGain) return;
+
+    // Dramatic elimination chord
+    const freqs = [220, 277, 330, 165];
+    freqs.forEach((f, i) => {
+      const osc = ctx.createOscillator();
+      osc.type = i === 3 ? 'square' : 'sawtooth';
+      osc.frequency.value = f;
+
+      const gain = ctx.createGain();
+      gain.gain.value = 0.08;
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+
+      osc.connect(gain);
+      gain.connect(this.sfxGain!);
+      osc.start(ctx.currentTime + i * 0.05);
+      osc.stop(ctx.currentTime + 0.7);
+    });
+  }
+
+  playLifeGain() {
+    const ctx = this.ensureContext();
+    if (!this.sfxGain) return;
+
+    // Ascending cheerful tone
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.value = 400;
+    osc.frequency.exponentialRampToValueAtTime(900, ctx.currentTime + 0.15);
+
+    const gain = ctx.createGain();
+    gain.gain.value = 0.1;
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.25);
+  }
+
+  playRematch() {
+    const ctx = this.ensureContext();
+    if (!this.sfxGain) return;
+
+    // Quick ascending triplet
+    [523, 659, 784].forEach((f, i) => {
+      const osc = ctx.createOscillator();
+      osc.type = 'triangle';
+      osc.frequency.value = f;
+
+      const gain = ctx.createGain();
+      gain.gain.value = 0.08;
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.08 + 0.08);
+
+      osc.connect(gain);
+      gain.connect(this.sfxGain!);
+      osc.start(ctx.currentTime + i * 0.08);
+      osc.stop(ctx.currentTime + i * 0.08 + 0.1);
+    });
   }
 }
