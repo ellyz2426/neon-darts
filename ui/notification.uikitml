@@ -1,0 +1,23 @@
+<panel width="0.4" height="0.08" color="{{notifBgColor}}" opacity="0.92" borderRadius="0.012" padding="0.008">
+  <!-- Notification Content -->
+  <panel height="0.03" flexDirection="row" marginBottom="0.004">
+    <panel width="0.035">
+      <text fontSize="0.02">{{notifIcon}}</text>
+    </panel>
+    <panel flex="1">
+      <text fontSize="0.015" color="#ffffff" fontWeight="bold">
+        {{notifTitle}}
+      </text>
+    </panel>
+    <panel width="0.03" event:click="dismissNotif" padding="0.002">
+      <text fontSize="0.012" color="#888888" textAlign="center">✕</text>
+    </panel>
+  </panel>
+
+  <!-- Message -->
+  <panel height="0.025" color="transparent">
+    <text fontSize="0.012" color="#cccccc">
+      {{notifMessage}}
+    </text>
+  </panel>
+</panel>

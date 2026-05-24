@@ -1,0 +1,28 @@
+<panel width="0.3" height="0.12" color="#0a0a1a" opacity="0.9" borderRadius="0.015" padding="0.01">
+  <!-- Turn Summary -->
+  <panel height="0.03" color="{{gradeBg}}" borderRadius="0.008" padding="0.004" marginBottom="0.005">
+    <text fontSize="0.016" color="#ffffff" fontWeight="bold" textAlign="center">
+      {{gradeLabel}} Round Summary
+    </text>
+  </panel>
+
+  <!-- Throw Breakdown -->
+  <panel height="0.04" color="#0d0d25" borderRadius="0.008" padding="0.005" marginBottom="0.005">
+    <text fontSize="0.013" color="#ffffff" textAlign="center">
+      {{throwLabels}}
+    </text>
+    <text fontSize="0.018" color="{{totalColor}}" fontWeight="bold" textAlign="center">
+      = {{totalScore}}
+    </text>
+  </panel>
+
+  <!-- Grade -->
+  <panel height="0.025" flexDirection="row">
+    <panel flex="1">
+      <text fontSize="0.012" color="#aaaacc">Avg: {{avgScore}}</text>
+    </panel>
+    <panel width="0.08" color="{{gradeBg}}" borderRadius="0.006" padding="0.002">
+      <text fontSize="0.016" color="#ffffff" textAlign="center" fontWeight="bold">{{grade}}</text>
+    </panel>
+  </panel>
+</panel>

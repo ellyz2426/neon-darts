@@ -76,6 +76,9 @@ import { TutorialManager } from './tutorial';
 import { SoundVisualizer } from './sound-visualizer';
 import { TrainingDrillManager } from './training-drills';
 import { CommentatorManager } from './commentator';
+import { BoardAnimator } from './board-animator';
+import { NotificationManager } from './notifications';
+import { ScoringHighlights } from './scoring-highlights';
 
 async function main() {
   const container = document.getElementById('app') as HTMLDivElement;
@@ -178,6 +181,16 @@ async function main() {
 
   // Commentator
   const commentator = new CommentatorManager();
+
+  // Board animator
+  const boardAnimator = new BoardAnimator();
+  boardAnimator.setBoard(boardGroup as any);
+
+  // Notification manager
+  const notifications = new NotificationManager();
+
+  // Scoring highlights
+  const scoringHighlights = new ScoringHighlights();
 
   // Combo tracker
   const combo = new ComboTracker();
@@ -320,6 +333,16 @@ async function main() {
       }
     }
 
+    // Board wobble on hit
+    if (result.segment === 25) {
+      boardAnimator.onBullseye();
+    } else if (result.total > 0) {
+      boardAnimator.onHit(result.multiplier);
+    }
+
+    // Track for scoring highlights
+    scoringHighlights.recordThrow(result.total, result.multiplier, result.segment, result.label);
+
     // Stop recording throw trajectory
     throwReplay.stopRecording(
       new Vector3(boardGroup.position.x + result.x, boardGroup.position.y + result.y, boardGroup.position.z),
@@ -434,6 +457,13 @@ async function main() {
       const turnCombo = combo.onTurnEnd(game.turnScore);
       if (turnCombo) {
         ui.showMessage(turnCombo.label, 2.0);
+      }
+
+      // Show turn scoring summary
+      const turnSummary = scoringHighlights.endTurn();
+      if (turnSummary.isMax180) {
+        const commentary180 = commentator.getComment('throw_180');
+        if (commentary180) notifications.notify('commentary', commentary180, '', 3, 5);
       }
 
       setTimeout(() => {
@@ -661,6 +691,9 @@ async function main() {
     powerUps.updateTimeBased(dt);
     soundVisualizer.update(dt);
     commentator.update(dt);
+    boardAnimator.update(dt);
+    notifications.update(dt);
+    scoringHighlights.update(dt);
     ui.update(dt);
 
     // Animate environment elements (gentle rotation)
