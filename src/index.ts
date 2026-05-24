@@ -63,6 +63,8 @@ import { ParticleSystem } from './particles';
 import { KillerManager } from './killer';
 import { MatchHistoryManager } from './match-history';
 import { ProfileManager } from './profile';
+import { HapticManager } from './haptics';
+import { StreakEffects } from './streak-effects';
 
 async function main() {
   const container = document.getElementById('app') as HTMLDivElement;
@@ -120,6 +122,13 @@ async function main() {
   // Connect dart skin manager
   dartManager.setSkinManager(ui.skinManager);
 
+  // Haptic feedback
+  const haptics = new HapticManager(world);
+  haptics.setEnabled(ui.profileManager.profile.hapticEnabled);
+
+  // Streak visual effects
+  const streakEffects = new StreakEffects(world, boardGroup.position);
+
   // Combo tracker
   const combo = new ComboTracker();
 
@@ -150,6 +159,7 @@ async function main() {
         const chargeDuration = Math.min(performance.now() - chargeStart, maxCharge);
         const power = chargeDuration / maxCharge;
         dartManager.throwDart(aimX, aimY, power);
+        haptics.onThrow(power);
         isCharging = false;
         ui.showPowerBar(false);
         ui.updatePower(0);
@@ -209,6 +219,13 @@ async function main() {
   dartManager.onDartHit = (result: ScoreResult) => {
     // Track for match history
     ui.trackThrowForStats(result);
+
+    // Haptic feedback
+    if (result.total > 0) {
+      haptics.onHit(result.multiplier, result.segment);
+    } else {
+      haptics.onMiss();
+    }
 
     // Handle Killer mode specifically
     if (game.mode === GameMode.Killer) {
@@ -281,6 +298,14 @@ async function main() {
     const comboResult = combo.onThrow(result.total);
     if (comboResult) {
       ui.showMessage(comboResult.label, 1.5);
+      streakEffects.triggerStreak(comboResult.count || 1);
+    }
+
+    // Streak effect on triples and bullseyes
+    if (result.multiplier === 3) {
+      streakEffects.triggerHighlight(result.x, result.y, '#ff00ff');
+    } else if (result.segment === 25) {
+      streakEffects.triggerHighlight(result.x, result.y, '#ffff00');
     }
 
     // Check achievements
@@ -339,6 +364,7 @@ async function main() {
           game.setState(GameState.GameOver);
           ui.showPanel('gameover');
           audio.playGameOver(won);
+          haptics.onGameOver(won);
           stats.recordGame(game.mode, won);
           achievements.checkAll(game, null);
           saveToLeaderboard(game);
@@ -462,7 +488,9 @@ async function main() {
 
         if (xrCharging) {
           const elapsed = Math.min(performance.now() - xrChargeStart, maxCharge);
-          ui.updatePower(elapsed / maxCharge);
+          const chargePower = elapsed / maxCharge;
+          ui.updatePower(chargePower);
+          haptics.onCharging(chargePower);
 
           if (triggerUp || triggerValue < 0.1) {
             const power = elapsed / maxCharge;
@@ -505,6 +533,7 @@ async function main() {
     scorePopups.update(dt);
     aimCursor.update(dt);
     particles.update(dt);
+    streakEffects.update(dt);
     ui.update(dt);
 
     // Animate environment elements (gentle rotation)

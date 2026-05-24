@@ -44,6 +44,11 @@ export class AchievementManager {
     { id: 'theme-explorer', name: 'Interior Designer', description: 'Try all 5 board themes', unlocked: false },
     { id: 'fifty-wins', name: 'Legend', description: 'Win 50 games', unlocked: false },
     { id: 'speed-finish', name: 'Lightning Round', description: 'Finish any game in under 5 rounds', unlocked: false },
+    { id: 'killer-win', name: 'Killer Instinct', description: 'Win a game of Killer', unlocked: false },
+    { id: 'killer-no-loss', name: 'Untouchable', description: 'Win Killer without losing a life', unlocked: false },
+    { id: 'profile-custom', name: 'Identity Crisis', description: 'Customize your profile', unlocked: false },
+    { id: 'rematch-5', name: 'Rematch King', description: 'Use Quick Rematch 5 times', unlocked: false },
+    { id: 'history-10', name: 'Historian', description: 'Play 10 tracked matches', unlocked: false },
   ];
 
   private stats: StatsTracker;
@@ -136,6 +141,11 @@ export class AchievementManager {
   unlockDailyStreak(count: number) { if (count >= 5) this.unlock('daily-streak-5'); }
   unlockSkinCollector() { this.unlock('skin-collector'); }
   unlockThemeExplorer() { this.unlock('theme-explorer'); }
+  unlockKillerWin() { this.unlock('killer-win'); }
+  unlockKillerNoLoss() { this.unlock('killer-no-loss'); }
+  unlockProfileCustom() { this.unlock('profile-custom'); }
+  unlockRematchKing(count: number) { if (count >= 5) this.unlock('rematch-5'); }
+  unlockHistorian(count: number) { if (count >= 10) this.unlock('history-10'); }
 
   getUnlockedCount(): number {
     return this.achievements.filter(a => a.unlocked).length;
