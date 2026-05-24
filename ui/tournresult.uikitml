@@ -1,0 +1,72 @@
+<style>
+  .tourn-result-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 2;
+    background-color: rgba(0, 0, 0, 0.92);
+    border-color: #ff8800;
+    border-width: 0.15;
+    border-radius: 1;
+    gap: 1;
+  }
+  .result-title {
+    font-size: 3.5;
+    color: #ff8800;
+    font-weight: bold;
+    text-align: center;
+  }
+  .result-sub {
+    font-size: 2;
+    color: #ffffff;
+    text-align: center;
+  }
+  .result-detail {
+    font-size: 1.5;
+    color: #cccccc;
+    text-align: center;
+  }
+  .result-record {
+    font-size: 1.5;
+    color: #aaaaaa;
+    text-align: center;
+  }
+  .btn-next {
+    padding: 1;
+    background-color: rgba(255, 136, 0, 0.3);
+    border-color: #ff8800;
+    border-width: 0.1;
+    border-radius: 0.5;
+    cursor: pointer;
+  }
+  .btn-next-text {
+    font-size: 2;
+    color: #ff8800;
+    font-weight: bold;
+    text-align: center;
+  }
+  .btn-menu {
+    padding: 0.8;
+    background-color: rgba(100, 100, 100, 0.3);
+    border-color: #666666;
+    border-width: 0.1;
+    border-radius: 0.5;
+    cursor: pointer;
+  }
+  .btn-menu-text {
+    font-size: 1.5;
+    color: #aaaaaa;
+    text-align: center;
+  }
+</style>
+<div class="tourn-result-panel">
+  <span id="tr-title" class="result-title">ROUND COMPLETE</span>
+  <span id="tr-result" class="result-sub">YOU WIN!</span>
+  <span id="tr-scores" class="result-detail">Player 1: 0 | CPU: 0</span>
+  <span id="tr-record" class="result-record">Tournament: 1 - 0</span>
+  <div id="btn-tr-next" class="btn-next" cursor="pointer">
+    <span class="btn-next-text">NEXT ROUND</span>
+  </div>
+  <div id="btn-tr-menu" class="btn-menu" cursor="pointer">
+    <span class="btn-menu-text">QUIT TOURNAMENT</span>
+  </div>
+</div>

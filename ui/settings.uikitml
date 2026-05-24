@@ -37,5 +37,12 @@
     <span id="skin-name" class="skin-name">Neon Classic</span>
     <div id="btn-skin-next" class="btn"><span class="btn-text">&gt;</span></div>
   </div>
+  <div class="sep"></div>
+  <span class="section">BOARD THEME</span>
+  <div class="row">
+    <div id="btn-theme-prev" class="btn"><span class="btn-text">&lt;</span></div>
+    <span id="theme-name" class="skin-name">Neon Holodeck</span>
+    <div id="btn-theme-next" class="btn"><span class="btn-text">&gt;</span></div>
+  </div>
   <div id="btn-settings-back" class="back-btn"><span class="back-text">BACK</span></div>
 </div>

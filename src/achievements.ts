@@ -34,6 +34,16 @@ export class AchievementManager {
     { id: 'triple-triple', name: 'Triple Threat', description: 'Hit 3 triples in one turn', unlocked: false },
     { id: 'beat-hard-ai', name: 'AI Slayer', description: 'Beat the Hard AI', unlocked: false },
     { id: 'all-modes', name: 'Versatile', description: 'Win in all 4 game modes', unlocked: false },
+    { id: 'tournament-win', name: 'Champion', description: 'Win the tournament', unlocked: false },
+    { id: 'daily-complete', name: 'Daily Grind', description: 'Complete a daily challenge', unlocked: false },
+    { id: 'daily-streak-5', name: 'Streak Week', description: 'Complete 5 daily challenges', unlocked: false },
+    { id: 'nine-darter', name: 'Nine Darter', description: 'Finish 501 in exactly 9 darts', unlocked: false },
+    { id: 'all-20s', name: 'Segment Master', description: 'Hit all 20 board segments in one game', unlocked: false },
+    { id: 'comeback', name: 'Comeback Kid', description: 'Win a game after trailing by 100+ points', unlocked: false },
+    { id: 'skin-collector', name: 'Fashionista', description: 'Try all 10 dart skins', unlocked: false },
+    { id: 'theme-explorer', name: 'Interior Designer', description: 'Try all 5 board themes', unlocked: false },
+    { id: 'fifty-wins', name: 'Legend', description: 'Win 50 games', unlocked: false },
+    { id: 'speed-finish', name: 'Lightning Round', description: 'Finish any game in under 5 rounds', unlocked: false },
   ];
 
   private stats: StatsTracker;
@@ -115,7 +125,17 @@ export class AchievementManager {
     if (s.fiveOhOneWins > 0 && s.cricketWins > 0 && s.shanghaiWins > 0 && s.aroundTheClockWins > 0) {
       this.unlock('all-modes');
     }
+
+    // New achievements
+    if (s.gamesWon >= 50) this.unlock('fifty-wins');
   }
+
+  // External triggers for new achievements
+  unlockTournament() { this.unlock('tournament-win'); }
+  unlockDaily() { this.unlock('daily-complete'); }
+  unlockDailyStreak(count: number) { if (count >= 5) this.unlock('daily-streak-5'); }
+  unlockSkinCollector() { this.unlock('skin-collector'); }
+  unlockThemeExplorer() { this.unlock('theme-explorer'); }
 
   getUnlockedCount(): number {
     return this.achievements.filter(a => a.unlocked).length;

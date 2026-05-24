@@ -20,10 +20,14 @@ import { AIOpponent, AIDifficulty } from './ai';
 import { getCheckoutSuggestion, isCheckoutPossible } from './checkout';
 import { DartSkinManager } from './skins';
 import { ScoreResult } from './dartboard';
+import { TournamentManager } from './tournament';
+import { DailyChallengeManager } from './daily-challenge';
+import { BoardThemeManager } from './board-themes';
 
 type PanelName = 'title' | 'modeselect' | 'difficulty' | 'hud' | 'pause' | 'gameover'
   | 'leaderboard' | 'achievements' | 'settings' | 'help' | 'stats' | 'message' | 'power'
-  | 'throwhistory' | 'cricket' | 'checkout' | 'announce';
+  | 'throwhistory' | 'cricket' | 'checkout' | 'announce'
+  | 'tournament' | 'tournhud' | 'tournresult' | 'daily' | 'dailyhud';
 
 function setText(el: any, text: string) {
   if (!el) return;
@@ -42,6 +46,9 @@ export class UIManager {
   private achievements: AchievementManager;
   private stats: StatsTracker;
   private ai: AIOpponent;
+  private tournament: TournamentManager;
+  private daily: DailyChallengeManager;
+  private boardThemeManager: BoardThemeManager;
   public skinManager: DartSkinManager;
 
   private panels: Map<PanelName, Entity> = new Map();
@@ -52,10 +59,18 @@ export class UIManager {
   private currentPanel: PanelName | null = null;
   private throwHistory: ScoreResult[] = [];
 
+  // External callbacks
+  public onTournamentPlay: (() => void) | null = null;
+  public onTournamentNext: (() => void) | null = null;
+  public onTournamentQuit: (() => void) | null = null;
+  public onDailyStart: (() => void) | null = null;
+
   constructor(
     world: World, game: GameManager, dartManager: DartManager,
     audio: AudioManager, achievements: AchievementManager,
-    stats: StatsTracker, ai: AIOpponent
+    stats: StatsTracker, ai: AIOpponent,
+    tournament: TournamentManager, daily: DailyChallengeManager,
+    boardThemeManager: BoardThemeManager
   ) {
     this.world = world;
     this.game = game;
@@ -64,6 +79,9 @@ export class UIManager {
     this.achievements = achievements;
     this.stats = stats;
     this.ai = ai;
+    this.tournament = tournament;
+    this.daily = daily;
+    this.boardThemeManager = boardThemeManager;
     this.skinManager = new DartSkinManager();
 
     this.createPanels();
@@ -74,126 +92,141 @@ export class UIManager {
     // Title screen
     this.createPanel('title', '/ui/title.json', {
       position: new Vector3(0, 1.7, -1.5),
-      maxWidth: 0.8,
-      maxHeight: 1.0,
+      maxWidth: 0.8, maxHeight: 1.0,
     });
 
     // Mode select
     this.createPanel('modeselect', '/ui/modeselect.json', {
       position: new Vector3(0, 1.7, -1.5),
-      maxWidth: 0.8,
-      maxHeight: 1.2,
+      maxWidth: 0.8, maxHeight: 1.4,
     });
 
     // Difficulty select
     this.createPanel('difficulty', '/ui/difficulty.json', {
       position: new Vector3(0, 1.7, -1.5),
-      maxWidth: 0.7,
-      maxHeight: 1.0,
+      maxWidth: 0.7, maxHeight: 1.0,
     });
 
     // HUD
     this.createPanel('hud', '/ui/hud.json', {
       follower: true,
       offsetPosition: [0.25, -0.12, -0.5],
-      maxWidth: 0.3,
-      maxHeight: 0.15,
+      maxWidth: 0.3, maxHeight: 0.15,
     });
 
     // Power bar
     this.createPanel('power', '/ui/power.json', {
       follower: true,
       offsetPosition: [0, -0.2, -0.5],
-      maxWidth: 0.15,
-      maxHeight: 0.04,
+      maxWidth: 0.15, maxHeight: 0.04,
     });
 
-    // Throw history — left HUD
+    // Throw history
     this.createPanel('throwhistory', '/ui/throwhistory.json', {
       follower: true,
       offsetPosition: [-0.28, -0.12, -0.5],
-      maxWidth: 0.2,
-      maxHeight: 0.12,
+      maxWidth: 0.2, maxHeight: 0.12,
     });
 
-    // Checkout suggestion — below HUD
+    // Checkout suggestion
     this.createPanel('checkout', '/ui/checkout.json', {
       follower: true,
       offsetPosition: [0.25, -0.22, -0.5],
-      maxWidth: 0.22,
-      maxHeight: 0.06,
+      maxWidth: 0.22, maxHeight: 0.06,
     });
 
-    // Cricket scoreboard — world-space, next to the board
+    // Cricket scoreboard
     this.createPanel('cricket', '/ui/cricket.json', {
       position: new Vector3(0.6, 1.7, -2.3),
-      maxWidth: 0.5,
-      maxHeight: 0.7,
+      maxWidth: 0.5, maxHeight: 0.7,
     });
 
-    // Turn announcement — head-following, center
+    // Turn announcement
     this.createPanel('announce', '/ui/announce.json', {
       follower: true,
       offsetPosition: [0, 0.05, -0.6],
-      maxWidth: 0.4,
-      maxHeight: 0.15,
+      maxWidth: 0.4, maxHeight: 0.15,
     });
 
     // Pause
     this.createPanel('pause', '/ui/pause.json', {
       position: new Vector3(0, 1.7, -1.2),
-      maxWidth: 0.6,
-      maxHeight: 0.6,
+      maxWidth: 0.6, maxHeight: 0.6,
     });
 
     // Game over
     this.createPanel('gameover', '/ui/gameover.json', {
       position: new Vector3(0, 1.7, -1.5),
-      maxWidth: 0.8,
-      maxHeight: 0.8,
+      maxWidth: 0.8, maxHeight: 0.8,
     });
 
     // Leaderboard
     this.createPanel('leaderboard', '/ui/leaderboard.json', {
       position: new Vector3(0, 1.7, -1.5),
-      maxWidth: 0.8,
-      maxHeight: 1.0,
+      maxWidth: 0.8, maxHeight: 1.0,
     });
 
     // Achievements
     this.createPanel('achievements', '/ui/achievements.json', {
       position: new Vector3(0, 1.7, -1.5),
-      maxWidth: 0.8,
-      maxHeight: 1.0,
+      maxWidth: 0.8, maxHeight: 1.2,
     });
 
     // Settings
     this.createPanel('settings', '/ui/settings.json', {
       position: new Vector3(0, 1.7, -1.5),
-      maxWidth: 0.7,
-      maxHeight: 1.0,
+      maxWidth: 0.7, maxHeight: 1.2,
     });
 
     // Help
     this.createPanel('help', '/ui/help.json', {
       position: new Vector3(0, 1.7, -1.5),
-      maxWidth: 0.8,
-      maxHeight: 1.0,
+      maxWidth: 0.8, maxHeight: 1.0,
     });
 
     // Stats
     this.createPanel('stats', '/ui/stats.json', {
       position: new Vector3(0, 1.7, -1.5),
-      maxWidth: 0.8,
-      maxHeight: 1.0,
+      maxWidth: 0.8, maxHeight: 1.0,
     });
 
     // Message toast
     this.createPanel('message', '/ui/message.json', {
       follower: true,
       offsetPosition: [0, 0.1, -0.5],
-      maxWidth: 0.3,
-      maxHeight: 0.06,
+      maxWidth: 0.3, maxHeight: 0.06,
+    });
+
+    // Tournament bracket
+    this.createPanel('tournament', '/ui/tournament.json', {
+      position: new Vector3(0, 1.7, -1.5),
+      maxWidth: 0.8, maxHeight: 1.2,
+    });
+
+    // Tournament HUD
+    this.createPanel('tournhud', '/ui/tournhud.json', {
+      follower: true,
+      offsetPosition: [-0.28, -0.2, -0.5],
+      maxWidth: 0.18, maxHeight: 0.08,
+    });
+
+    // Tournament result
+    this.createPanel('tournresult', '/ui/tournresult.json', {
+      position: new Vector3(0, 1.7, -1.5),
+      maxWidth: 0.7, maxHeight: 0.8,
+    });
+
+    // Daily challenge panel
+    this.createPanel('daily', '/ui/daily.json', {
+      position: new Vector3(0, 1.7, -1.5),
+      maxWidth: 0.7, maxHeight: 1.0,
+    });
+
+    // Daily challenge HUD
+    this.createPanel('dailyhud', '/ui/dailyhud.json', {
+      follower: true,
+      offsetPosition: [-0.28, -0.2, -0.5],
+      maxWidth: 0.18, maxHeight: 0.08,
     });
   }
 
@@ -306,6 +339,15 @@ export class UIManager {
           this.game.startGame(GameMode.Practice, false);
           this.showPanel('hud');
         });
+        doc.getElementById('btn-tournament')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.tournament.startTournament();
+          this.showTournamentBracket();
+        });
+        doc.getElementById('btn-daily')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.showDailyPanel();
+        });
         doc.getElementById('btn-mode-back')?.addEventListener('click', () => {
           this.audio.playButtonClick();
           this.showPanel('title');
@@ -359,6 +401,8 @@ export class UIManager {
         doc.getElementById('btn-quit')?.addEventListener('click', () => {
           this.audio.playButtonClick();
           this.dartManager.clearDarts();
+          this.daily.active = false;
+          this.tournament.state.active = false;
           this.game.setState(GameState.Title);
           this.showPanel('title');
         });
@@ -426,9 +470,54 @@ export class UIManager {
           this.skinManager.prevSkin();
           this.updateSettingsDisplay();
         });
+        doc.getElementById('btn-theme-next')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.boardThemeManager.nextTheme();
+          this.updateSettingsDisplay();
+        });
+        doc.getElementById('btn-theme-prev')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.boardThemeManager.prevTheme();
+          this.updateSettingsDisplay();
+        });
         doc.getElementById('btn-settings-back')?.addEventListener('click', () => {
           this.audio.playButtonClick();
           this.showPanel('title');
+        });
+        break;
+      }
+      case 'tournament': {
+        doc.getElementById('btn-tourn-play')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          if (this.onTournamentPlay) this.onTournamentPlay();
+        });
+        doc.getElementById('btn-tourn-back')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          if (this.onTournamentQuit) this.onTournamentQuit();
+        });
+        break;
+      }
+      case 'tournresult': {
+        doc.getElementById('btn-tr-next')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.dartManager.clearDarts();
+          if (this.onTournamentNext) this.onTournamentNext();
+        });
+        doc.getElementById('btn-tr-menu')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.dartManager.clearDarts();
+          if (this.onTournamentQuit) this.onTournamentQuit();
+        });
+        break;
+      }
+      case 'daily': {
+        doc.getElementById('btn-daily-start')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          if (this.onDailyStart) this.onDailyStart();
+        });
+        doc.getElementById('btn-daily-back')?.addEventListener('click', () => {
+          this.audio.playButtonClick();
+          this.showPanel('modeselect');
         });
         break;
       }
@@ -436,8 +525,7 @@ export class UIManager {
   }
 
   showPanel(name: PanelName | 'hud') {
-    // Hide all non-HUD panels
-    const hudPanels: PanelName[] = ['hud', 'power', 'message', 'throwhistory', 'checkout', 'cricket', 'announce'];
+    const hudPanels: PanelName[] = ['hud', 'power', 'message', 'throwhistory', 'checkout', 'cricket', 'announce', 'tournhud', 'dailyhud'];
 
     for (const [pName, entity] of this.panels) {
       if (hudPanels.includes(pName)) continue;
@@ -445,15 +533,12 @@ export class UIManager {
     }
 
     if (name === 'hud') {
-      // Show HUD panels
       const hud = this.panels.get('hud');
       if (hud) hud.object3D.visible = true;
 
-      // Show throw history during gameplay
       const hist = this.panels.get('throwhistory');
       if (hist) hist.object3D.visible = true;
 
-      // Show checkout in 501 mode
       if (this.game.mode === GameMode.FiveOhOne) {
         this.updateCheckout();
       } else {
@@ -461,7 +546,6 @@ export class UIManager {
         if (co) co.object3D.visible = false;
       }
 
-      // Show cricket scoreboard
       if (this.game.mode === GameMode.Cricket) {
         const cric = this.panels.get('cricket');
         if (cric) cric.object3D.visible = true;
@@ -471,18 +555,36 @@ export class UIManager {
         if (cric) cric.object3D.visible = false;
       }
 
+      // Show tournament HUD if in tournament
+      if (this.tournament.state.active && !this.tournament.state.completed) {
+        const thud = this.panels.get('tournhud');
+        if (thud) thud.object3D.visible = true;
+        this.updateTournamentHud();
+      } else {
+        const thud = this.panels.get('tournhud');
+        if (thud) thud.object3D.visible = false;
+      }
+
+      // Show daily HUD if in daily challenge
+      if (this.daily.active) {
+        const dhud = this.panels.get('dailyhud');
+        if (dhud) dhud.object3D.visible = true;
+        this.updateDailyHud();
+      } else {
+        const dhud = this.panels.get('dailyhud');
+        if (dhud) dhud.object3D.visible = false;
+      }
+
       this.updateGameState();
       this.updateThrowHistory();
       this.currentPanel = 'hud';
 
-      // Hide menu panels
       for (const [pName, entity] of this.panels) {
         if (!hudPanels.includes(pName)) {
           entity.object3D.visible = false;
         }
       }
     } else {
-      // Hide all HUD panels when showing menu panels
       for (const n of hudPanels) {
         const p = this.panels.get(n);
         if (p) p.object3D.visible = false;
@@ -492,7 +594,6 @@ export class UIManager {
       if (panel) panel.object3D.visible = true;
       this.currentPanel = name;
 
-      // Update panel content
       if (name === 'gameover') this.updateGameOverPanel();
       if (name === 'settings') this.updateSettingsDisplay();
     }
@@ -515,21 +616,16 @@ export class UIManager {
     setText(bar, blocks);
   }
 
-  // Called after each dart hit
   recordThrow(result: ScoreResult) {
     this.throwHistory.push(result);
-    // Keep only the current turn's throws (max 3)
     if (this.throwHistory.length > 3) {
       this.throwHistory = this.throwHistory.slice(-3);
     }
     this.updateThrowHistory();
 
-    // Update checkout in 501 mode
     if (this.game.mode === GameMode.FiveOhOne) {
       this.updateCheckout();
     }
-
-    // Update cricket scoreboard
     if (this.game.mode === GameMode.Cricket) {
       this.updateCricketScoreboard();
     }
@@ -610,7 +706,7 @@ export class UIManager {
     if (marks === 0) return '---';
     if (marks === 1) return '/';
     if (marks === 2) return 'X';
-    return '\u2718\u2718\u2718'; // ✘✘✘ = closed
+    return '\u2718\u2718\u2718';
   }
 
   showTurnAnnouncement() {
@@ -622,7 +718,7 @@ export class UIManager {
 
     const doc = this.getDoc('announce');
     if (doc) {
-      setText(doc.getElementById('announce-text'), player.isAI ? "CPU'S TURN" : `${player.name.toUpperCase()}'S TURN`);
+      setText(doc.getElementById('announce-text'), player.isAI ? `${player.name}'S TURN` : `${player.name.toUpperCase()}'S TURN`);
       setText(doc.getElementById('announce-sub'), '3 darts remaining');
     }
 
@@ -634,19 +730,12 @@ export class UIManager {
     const doc = this.getDoc('hud');
     if (!doc) return;
 
-    const mode = doc.getElementById('hud-mode');
-    const player = doc.getElementById('hud-player');
-    const score = doc.getElementById('hud-score');
-    const round = doc.getElementById('hud-round');
-    const darts = doc.getElementById('hud-darts');
-    const turnScore = doc.getElementById('hud-turn');
-
-    setText(mode, this.game.getModeLabel());
-    setText(player, this.game.players[this.game.currentPlayer]?.name || '');
-    setText(score, this.game.getPlayerDisplay(this.game.currentPlayer));
-    setText(round, this.game.getRoundInfo());
-    setText(darts, `Darts: ${3 - this.game.dartsThisRound}/3`);
-    setText(turnScore, `Turn: ${this.game.turnScore}`);
+    setText(doc.getElementById('hud-mode'), this.game.getModeLabel());
+    setText(doc.getElementById('hud-player'), this.game.players[this.game.currentPlayer]?.name || '');
+    setText(doc.getElementById('hud-score'), this.game.getPlayerDisplay(this.game.currentPlayer));
+    setText(doc.getElementById('hud-round'), this.game.getRoundInfo());
+    setText(doc.getElementById('hud-darts'), `Darts: ${3 - this.game.dartsThisRound}/3`);
+    setText(doc.getElementById('hud-turn'), `Turn: ${this.game.turnScore}`);
   }
 
   private updateGameOverPanel() {
@@ -709,6 +798,7 @@ export class UIManager {
     setText(doc.getElementById('vol-sfx'), `SFX: ${Math.round(this.audio.sfxVolume * 100)}%`);
     setText(doc.getElementById('vol-music'), `Music: ${Math.round(this.audio.musicVolume * 100)}%`);
     setText(doc.getElementById('skin-name'), this.skinManager.currentSkin.name);
+    setText(doc.getElementById('theme-name'), this.boardThemeManager.currentTheme.name);
   }
 
   private updateStatsPanel() {
@@ -737,6 +827,83 @@ export class UIManager {
     if (doc) setText(doc.getElementById('msg-text'), text);
   }
 
+  // Tournament UI
+  showTournamentBracket() {
+    this.showPanel('tournament');
+    const doc = this.getDoc('tournament');
+    if (!doc) return;
+
+    const bracket = this.tournament.getBracketDisplay();
+    for (let i = 0; i < 8; i++) {
+      const el = doc.getElementById(`tourn-bracket-${i}`);
+      if (el && bracket[i]) {
+        setText(el, bracket[i]);
+      }
+    }
+
+    setText(doc.getElementById('tourn-status'), this.tournament.getRoundLabel());
+  }
+
+  showTournamentResult(won: boolean) {
+    this.showPanel('tournresult');
+    const doc = this.getDoc('tournresult');
+    if (!doc) return;
+
+    if (this.tournament.isChampion()) {
+      setText(doc.getElementById('tr-title'), 'CHAMPION!');
+      setText(doc.getElementById('tr-result'), 'You defeated all challengers!');
+    } else if (this.tournament.isEliminated()) {
+      setText(doc.getElementById('tr-title'), 'ELIMINATED');
+      setText(doc.getElementById('tr-result'), 'Better luck next time!');
+    } else {
+      setText(doc.getElementById('tr-title'), won ? 'ROUND WON!' : 'ROUND LOST');
+      setText(doc.getElementById('tr-result'), won ? 'Advancing to next round...' : 'Tournament over!');
+    }
+
+    const p1 = this.game.getPlayerDisplay(0);
+    const p2 = this.game.getPlayerDisplay(1);
+    setText(doc.getElementById('tr-scores'), `${this.game.players[0]?.name}: ${p1} | ${this.game.players[1]?.name}: ${p2}`);
+    setText(doc.getElementById('tr-record'), `Record: ${this.tournament.state.totalWins} - ${this.tournament.state.totalLosses}`);
+  }
+
+  private updateTournamentHud() {
+    const doc = this.getDoc('tournhud');
+    if (!doc) return;
+
+    setText(doc.getElementById('thud-round'), this.tournament.getRoundLabel());
+    setText(doc.getElementById('thud-opponent'), `vs ${this.tournament.getCurrentOpponentName()}`);
+  }
+
+  // Daily challenge UI
+  showDailyPanel() {
+    this.showPanel('daily');
+    const doc = this.getDoc('daily');
+    if (!doc) return;
+
+    const ch = this.daily.currentChallenge;
+    setText(doc.getElementById('daily-date'), ch.date);
+    setText(doc.getElementById('daily-name'), ch.title);
+    setText(doc.getElementById('daily-desc'), ch.description);
+    setText(doc.getElementById('daily-progress'), this.daily.getProgressText());
+    setText(doc.getElementById('daily-darts'), `Darts: ${ch.dartsAllowed}`);
+    setText(doc.getElementById('daily-reward'), `Reward: ${ch.reward}`);
+    setText(doc.getElementById('daily-history'), `Completed: ${this.daily.getCompletedCount()} | Attempts today: ${this.daily.getTodayAttempts()}`);
+  }
+
+  showDailyHud(visible: boolean) {
+    const dhud = this.panels.get('dailyhud');
+    if (dhud) dhud.object3D.visible = visible;
+  }
+
+  updateDailyHud() {
+    const doc = this.getDoc('dailyhud');
+    if (!doc) return;
+
+    setText(doc.getElementById('dhud-title'), this.daily.currentChallenge.title);
+    setText(doc.getElementById('dhud-progress'), this.daily.getProgressText());
+    setText(doc.getElementById('dhud-darts'), `${this.daily.getDartsRemaining()} darts left`);
+  }
+
   private setupAchievementToast() {
     this.achievements.onUnlock = (achievement: Achievement) => {
       this.showMessage(`UNLOCKED: ${achievement.name}`, 3.0);
@@ -745,7 +912,6 @@ export class UIManager {
   }
 
   update(dt: number) {
-    // Message timer
     if (this.messageTimer > 0) {
       this.messageTimer -= dt;
       if (this.messageTimer <= 0) {
@@ -754,7 +920,6 @@ export class UIManager {
       }
     }
 
-    // Announcement timer
     if (this.announceTimer > 0) {
       this.announceTimer -= dt;
       if (this.announceTimer <= 0) {
@@ -763,7 +928,6 @@ export class UIManager {
       }
     }
 
-    // Re-try getting docs for panels that haven't loaded yet
     for (const [name] of this.panels) {
       if (!this.docs.get(name as PanelName)) {
         this.getDoc(name as PanelName);

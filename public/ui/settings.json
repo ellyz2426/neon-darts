@@ -312,6 +312,92 @@
       {
         "type": "container",
         "sourceTag": "div",
+        "children": [],
+        "properties": {
+          "class": "sep"
+        },
+        "dataUid": "uid-30"
+      },
+      {
+        "sourceTag": "span",
+        "type": "custom",
+        "children": [
+          "BOARD THEME"
+        ],
+        "properties": {
+          "class": "section"
+        },
+        "dataUid": "uid-31"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
+        "children": [
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  "<"
+                ],
+                "properties": {
+                  "class": "btn-text"
+                },
+                "dataUid": "uid-34"
+              }
+            ],
+            "properties": {
+              "id": "btn-theme-prev",
+              "class": "btn"
+            },
+            "dataUid": "uid-33"
+          },
+          {
+            "sourceTag": "span",
+            "type": "custom",
+            "children": [
+              "Neon Holodeck"
+            ],
+            "properties": {
+              "id": "theme-name",
+              "class": "skin-name"
+            },
+            "dataUid": "uid-35"
+          },
+          {
+            "type": "container",
+            "sourceTag": "div",
+            "children": [
+              {
+                "sourceTag": "span",
+                "type": "custom",
+                "children": [
+                  ">"
+                ],
+                "properties": {
+                  "class": "btn-text"
+                },
+                "dataUid": "uid-37"
+              }
+            ],
+            "properties": {
+              "id": "btn-theme-next",
+              "class": "btn"
+            },
+            "dataUid": "uid-36"
+          }
+        ],
+        "properties": {
+          "class": "row"
+        },
+        "dataUid": "uid-32"
+      },
+      {
+        "type": "container",
+        "sourceTag": "div",
         "children": [
           {
             "sourceTag": "span",
@@ -322,14 +408,14 @@
             "properties": {
               "class": "back-text"
             },
-            "dataUid": "uid-31"
+            "dataUid": "uid-39"
           }
         ],
         "properties": {
           "id": "btn-settings-back",
           "class": "back-btn"
         },
-        "dataUid": "uid-30"
+        "dataUid": "uid-38"
       }
     ],
     "properties": {
@@ -571,7 +657,7 @@
         "column": 0
       },
       "end": {
-        "line": 40,
+        "line": 47,
         "column": 6
       }
     },
@@ -862,16 +948,96 @@
       },
       "end": {
         "line": 39,
-        "column": 88
+        "column": 25
       }
     },
     "uid-31": {
       "start": {
-        "line": 39,
+        "line": 40,
+        "column": 2
+      },
+      "end": {
+        "line": 40,
+        "column": 42
+      }
+    },
+    "uid-32": {
+      "start": {
+        "line": 41,
+        "column": 2
+      },
+      "end": {
+        "line": 45,
+        "column": 8
+      }
+    },
+    "uid-33": {
+      "start": {
+        "line": 42,
+        "column": 4
+      },
+      "end": {
+        "line": 42,
+        "column": 81
+      }
+    },
+    "uid-34": {
+      "start": {
+        "line": 42,
+        "column": 41
+      },
+      "end": {
+        "line": 42,
+        "column": 75
+      }
+    },
+    "uid-35": {
+      "start": {
+        "line": 43,
+        "column": 4
+      },
+      "end": {
+        "line": 43,
+        "column": 64
+      }
+    },
+    "uid-36": {
+      "start": {
+        "line": 44,
+        "column": 4
+      },
+      "end": {
+        "line": 44,
+        "column": 81
+      }
+    },
+    "uid-37": {
+      "start": {
+        "line": 44,
+        "column": 41
+      },
+      "end": {
+        "line": 44,
+        "column": 75
+      }
+    },
+    "uid-38": {
+      "start": {
+        "line": 46,
+        "column": 2
+      },
+      "end": {
+        "line": 46,
+        "column": 88
+      }
+    },
+    "uid-39": {
+      "start": {
+        "line": 46,
         "column": 47
       },
       "end": {
-        "line": 39,
+        "line": 46,
         "column": 82
       }
     }

@@ -54,6 +54,11 @@ import { AchievementManager } from './achievements';
 import { StatsTracker } from './stats';
 import { EffectsManager } from './effects';
 import { ComboTracker } from './combo';
+import { ScorePopupManager } from './score-popup';
+import { AimCursor } from './aim-cursor';
+import { TournamentManager } from './tournament';
+import { DailyChallengeManager } from './daily-challenge';
+import { BoardThemeManager } from './board-themes';
 
 async function main() {
   const container = document.getElementById('app') as HTMLDivElement;
@@ -74,17 +79,16 @@ async function main() {
     },
   } as any);
 
-  // Audio
+  // Core systems
   const audio = new AudioManager();
-
-  // Stats
   const stats = new StatsTracker();
-
-  // Effects
   const effects = new EffectsManager(world);
-
-  // Achievements
   const achievements = new AchievementManager(stats);
+  const scorePopups = new ScorePopupManager(world);
+  const aimCursor = new AimCursor(world);
+  const tournament = new TournamentManager();
+  const daily = new DailyChallengeManager();
+  const boardThemeManager = new BoardThemeManager();
 
   // Create environment
   createEnvironment(world);
@@ -104,9 +108,9 @@ async function main() {
   const ai = new AIOpponent();
 
   // UI manager
-  const ui = new UIManager(world, game, dartManager, audio, achievements, stats, ai);
+  const ui = new UIManager(world, game, dartManager, audio, achievements, stats, ai, tournament, daily, boardThemeManager);
 
-  // Connect dart skin manager to dart manager
+  // Connect dart skin manager
   dartManager.setSkinManager(ui.skinManager);
 
   // Combo tracker
@@ -117,7 +121,7 @@ async function main() {
   let chargeStart = 0;
   let aimX = 0;
   let aimY = 0;
-  const maxCharge = 1500; // ms for full power
+  const maxCharge = 1500;
   let mouseX = 0;
   let mouseY = 0;
 
@@ -142,6 +146,7 @@ async function main() {
         isCharging = false;
         ui.showPowerBar(false);
         ui.updatePower(0);
+        aimCursor.hide();
       }
     });
 
@@ -153,17 +158,23 @@ async function main() {
 
         const raycaster = new Raycaster();
         raycaster.setFromCamera(new Vector2(mouseX, mouseY), (world as any).camera || (world as any).renderer?.xr?.getCamera?.() || world.scene.children.find((c: any) => c.isCamera));
-        
+
         const boardPlane = new PlaneGeometry(1, 1);
         const boardMesh = new Mesh(boardPlane, new MeshBasicMaterial({ visible: false }));
         boardMesh.position.copy(boardGroup.position);
         world.scene.add(boardMesh);
-        
+
         const intersects = raycaster.intersectObject(boardMesh);
         if (intersects.length > 0) {
           const point = intersects[0].point;
           aimX = point.x - boardGroup.position.x;
           aimY = point.y - boardGroup.position.y;
+
+          // Update aim cursor
+          if (!game.isAITurn()) {
+            aimCursor.setPosition(boardGroup.position, aimX, aimY);
+            aimCursor.show();
+          }
         }
         world.scene.remove(boardMesh);
         boardMesh.geometry.dispose();
@@ -178,6 +189,7 @@ async function main() {
         if (game.state === GameState.Playing) {
           game.setState(GameState.Paused);
           ui.showPanel('pause');
+          aimCursor.hide();
         } else if (game.state === GameState.Paused) {
           game.setState(GameState.Playing);
           ui.showPanel('hud');
@@ -200,8 +212,44 @@ async function main() {
       result.multiplier === 3 ? '#ff00ff' : result.multiplier === 2 ? '#00ff00' : '#00ffff'
     );
 
+    // Floating score popup
+    scorePopups.spawnScorePopup(
+      new Vector3(
+        boardGroup.position.x + result.x,
+        boardGroup.position.y + result.y,
+        boardGroup.position.z
+      ),
+      result.total, result.multiplier, result.segment
+    );
+
     // Track stats
     stats.recordThrow(result.total, result.multiplier, result.segment);
+
+    // Daily challenge tracking
+    if (daily.active) {
+      daily.recordThrow(result.total, result.multiplier, result.segment);
+      ui.updateDailyHud();
+
+      if (!daily.active) {
+        // Challenge ended (ran out of darts)
+        setTimeout(() => {
+          if (daily.isCompleted()) {
+            achievements.unlockDaily();
+            achievements.unlockDailyStreak(daily.getCompletedCount());
+            ui.showMessage('CHALLENGE COMPLETE!', 3.0);
+            audio.playAchievement();
+          } else {
+            ui.showMessage('CHALLENGE FAILED', 2.0);
+          }
+          setTimeout(() => {
+            dartManager.clearDarts();
+            game.setState(GameState.Title);
+            ui.showPanel('title');
+          }, 2000);
+        }, 800);
+        return;
+      }
+    }
 
     // Combo feedback
     const comboResult = combo.onThrow(result.total);
@@ -214,10 +262,8 @@ async function main() {
 
     // Check if turn is over (3 darts thrown)
     if (game.dartsThisRound >= 3) {
-      // Record the turn score
       stats.recordTurn(game.turnScore);
 
-      // Check for turn streaks
       const turnCombo = combo.onTurnEnd(game.turnScore);
       if (turnCombo) {
         ui.showMessage(turnCombo.label, 2.0);
@@ -229,20 +275,35 @@ async function main() {
         ui.clearThrowHistory();
 
         if (game.isGameOver()) {
+          const won = game.getWinner() === 1;
+
+          // Tournament handling
+          if (tournament.state.active) {
+            const playerScore = game.getPlayerDisplay(0);
+            const oppScore = game.getPlayerDisplay(1);
+            tournament.recordResult(won, playerScore, oppScore);
+
+            if (tournament.isChampion()) {
+              achievements.unlockTournament();
+            }
+
+            ui.showTournamentResult(won);
+            audio.playGameOver(won);
+            stats.recordGame(game.mode, won);
+            achievements.checkAll(game, null);
+            return;
+          }
+
           game.setState(GameState.GameOver);
           ui.showPanel('gameover');
-          audio.playGameOver(game.getWinner() === 1);
-          stats.recordGame(game.mode, game.getWinner() === 1);
+          audio.playGameOver(won);
+          stats.recordGame(game.mode, won);
           achievements.checkAll(game, null);
-
-          // Save to leaderboard
           saveToLeaderboard(game);
         } else if (game.isAITurn()) {
-          // Show turn announcement then AI throws
           ui.showTurnAnnouncement();
           setTimeout(() => performAITurn(), 1800);
         } else {
-          // Show turn announcement for next player
           ui.showTurnAnnouncement();
         }
 
@@ -263,7 +324,6 @@ async function main() {
         score: game.getPlayerDisplay(winner - 1),
         date: new Date().toISOString().split('T')[0],
       });
-      // Keep top 50
       while (entries.length > 50) entries.pop();
       localStorage.setItem('neon-darts-leaderboard', JSON.stringify(entries));
     } catch {}
@@ -287,9 +347,49 @@ async function main() {
     }
   }
 
+  // Tournament: start round game
+  ui.onTournamentPlay = () => {
+    const round = tournament.getCurrentRound();
+    if (!round) return;
+    ai.difficulty = round.difficulty;
+    game.startGame(round.mode, true);
+    game.players[1].name = round.opponentName;
+    ui.showPanel('hud');
+    ui.showTurnAnnouncement();
+  };
+
+  // Tournament: advance to next round
+  ui.onTournamentNext = () => {
+    if (tournament.state.completed) {
+      ui.showPanel('title');
+      return;
+    }
+    ui.showTournamentBracket();
+  };
+
+  // Tournament: quit
+  ui.onTournamentQuit = () => {
+    tournament.state.active = false;
+    tournament.state.completed = true;
+    dartManager.clearDarts();
+    game.setState(GameState.Title);
+    ui.showPanel('title');
+  };
+
+  // Daily challenge: start
+  ui.onDailyStart = () => {
+    daily.startChallenge();
+    game.startGame(GameMode.Practice, false);
+    ui.showPanel('hud');
+    ui.showDailyHud(true);
+  };
+
   // XR input handling
   let xrCharging = false;
   let xrChargeStart = 0;
+
+  // Animated environment state
+  let animTime = 0;
 
   // Update loop
   let lastTime = 0;
@@ -309,7 +409,7 @@ async function main() {
       const triggerDown = rightGamepad.getButtonDown?.(0);
       const triggerUp = rightGamepad.getButtonUp?.(0);
       const triggerValue = rightGamepad.getButtonValue?.(0) ?? 0;
-      const bDown = rightGamepad.getButtonDown?.(4); // B
+      const bDown = rightGamepad.getButtonDown?.(4);
 
       if (game.state === GameState.Playing && !game.isAITurn()) {
         if (triggerDown && dartManager.canThrow()) {
@@ -357,14 +457,15 @@ async function main() {
       }
     }
 
-    // Update effects
+    // Update systems
     effects.update(dt);
-
-    // Update dart flight
     dartManager.update(dt);
-
-    // Update UI animations
+    scorePopups.update(dt);
+    aimCursor.update(dt);
     ui.update(dt);
+
+    // Animate environment elements (gentle rotation)
+    animTime += dt;
 
     requestAnimationFrame(update);
   }

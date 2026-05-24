@@ -1,0 +1,98 @@
+<style>
+  .daily-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 2;
+    background-color: rgba(0, 0, 0, 0.92);
+    border-color: #ffcc00;
+    border-width: 0.15;
+    border-radius: 1;
+    gap: 1;
+  }
+  .daily-title {
+    font-size: 3;
+    color: #ffcc00;
+    font-weight: bold;
+    text-align: center;
+  }
+  .daily-date {
+    font-size: 1.5;
+    color: #aa9944;
+    text-align: center;
+  }
+  .challenge-name {
+    font-size: 2.5;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: center;
+  }
+  .challenge-desc {
+    font-size: 1.5;
+    color: #cccccc;
+    text-align: center;
+  }
+  .challenge-progress {
+    font-size: 2;
+    color: #ffcc00;
+    font-weight: bold;
+    text-align: center;
+  }
+  .challenge-darts {
+    font-size: 1.5;
+    color: #aaaaaa;
+    text-align: center;
+  }
+  .challenge-reward {
+    font-size: 1.3;
+    color: #ff8800;
+    text-align: center;
+  }
+  .challenge-history {
+    font-size: 1.2;
+    color: #888888;
+    text-align: center;
+  }
+  .btn-daily {
+    padding: 1;
+    background-color: rgba(255, 204, 0, 0.3);
+    border-color: #ffcc00;
+    border-width: 0.1;
+    border-radius: 0.5;
+    cursor: pointer;
+  }
+  .btn-daily-text {
+    font-size: 2;
+    color: #ffcc00;
+    font-weight: bold;
+    text-align: center;
+  }
+  .btn-back {
+    padding: 0.8;
+    background-color: rgba(100, 100, 100, 0.3);
+    border-color: #666666;
+    border-width: 0.1;
+    border-radius: 0.5;
+    cursor: pointer;
+  }
+  .btn-back-text {
+    font-size: 1.5;
+    color: #aaaaaa;
+    text-align: center;
+  }
+</style>
+<div class="daily-panel">
+  <span class="daily-title">DAILY CHALLENGE</span>
+  <span id="daily-date" class="daily-date">2026-05-24</span>
+  <span id="daily-name" class="challenge-name">Triple Frenzy</span>
+  <span id="daily-desc" class="challenge-desc">Hit 5 triples in 15 darts</span>
+  <span id="daily-progress" class="challenge-progress">0 / 5</span>
+  <span id="daily-darts" class="challenge-darts">Darts: 15 remaining</span>
+  <span id="daily-reward" class="challenge-reward">Reward: Triple Master</span>
+  <span id="daily-history" class="challenge-history">Completed: 0 | Attempts today: 0</span>
+  <div id="btn-daily-start" class="btn-daily" cursor="pointer">
+    <span class="btn-daily-text">START</span>
+  </div>
+  <div id="btn-daily-back" class="btn-back" cursor="pointer">
+    <span class="btn-back-text">BACK</span>
+  </div>
+</div>

@@ -1,0 +1,86 @@
+<style>
+  .tournament-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 2;
+    background-color: rgba(0, 0, 0, 0.92);
+    border-color: #ff8800;
+    border-width: 0.15;
+    border-radius: 1;
+    gap: 1;
+  }
+  .tournament-title {
+    font-size: 3.5;
+    color: #ff8800;
+    font-weight: bold;
+    text-align: center;
+  }
+  .tournament-sub {
+    font-size: 1.5;
+    color: #ccaa66;
+    text-align: center;
+  }
+  .bracket-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-left: 1;
+    padding-right: 1;
+    padding-top: 0.3;
+    padding-bottom: 0.3;
+  }
+  .bracket-text {
+    font-size: 1.3;
+    color: #aaaaaa;
+  }
+  .bracket-active {
+    font-size: 1.4;
+    color: #ff8800;
+    font-weight: bold;
+  }
+  .btn-tournament {
+    padding: 1;
+    background-color: rgba(255, 136, 0, 0.3);
+    border-color: #ff8800;
+    border-width: 0.1;
+    border-radius: 0.5;
+    cursor: pointer;
+  }
+  .btn-tournament-text {
+    font-size: 2;
+    color: #ff8800;
+    font-weight: bold;
+    text-align: center;
+  }
+  .btn-back {
+    padding: 0.8;
+    background-color: rgba(100, 100, 100, 0.3);
+    border-color: #666666;
+    border-width: 0.1;
+    border-radius: 0.5;
+    cursor: pointer;
+  }
+  .btn-back-text {
+    font-size: 1.5;
+    color: #aaaaaa;
+    text-align: center;
+  }
+</style>
+<div class="tournament-panel">
+  <span class="tournament-title">TOURNAMENT</span>
+  <span class="tournament-sub" id="tourn-status">8-Round Single Elimination</span>
+  <span id="tourn-bracket-0" class="bracket-active">R1: ROOKIE BOT (501) - ...</span>
+  <span id="tourn-bracket-1" class="bracket-text">R2: DART CADET (CRICKET) - ...</span>
+  <span id="tourn-bracket-2" class="bracket-text">R3: NEON THROWER (AROUND) - ...</span>
+  <span id="tourn-bracket-3" class="bracket-text">R4: CIRCUIT ACE (SHANGHAI) - ...</span>
+  <span id="tourn-bracket-4" class="bracket-text">R5: VOID STRIKER (501) - ...</span>
+  <span id="tourn-bracket-5" class="bracket-text">R6: PHANTOM ARM (CRICKET) - ...</span>
+  <span id="tourn-bracket-6" class="bracket-text">R7: GRID MASTER (501) - ...</span>
+  <span id="tourn-bracket-7" class="bracket-text">R8: CHAMPION X (501) - ...</span>
+  <div id="btn-tourn-play" class="btn-tournament" cursor="pointer">
+    <span class="btn-tournament-text">FIGHT!</span>
+  </div>
+  <div id="btn-tourn-back" class="btn-back" cursor="pointer">
+    <span class="btn-back-text">BACK</span>
+  </div>
+</div>

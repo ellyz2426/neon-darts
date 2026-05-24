@@ -1,0 +1,31 @@
+<style>
+  .daily-hud-panel {
+    display: flex;
+    flex-direction: column;
+    padding: 1;
+    background-color: rgba(0, 0, 0, 0.85);
+    border-color: #ffcc00;
+    border-width: 0.08;
+    border-radius: 0.5;
+    gap: 0.3;
+  }
+  .daily-hud-title {
+    font-size: 1.3;
+    color: #ffcc00;
+    font-weight: bold;
+  }
+  .daily-hud-progress {
+    font-size: 1.8;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  .daily-hud-darts {
+    font-size: 1.2;
+    color: #aaaaaa;
+  }
+</style>
+<div class="daily-hud-panel">
+  <span class="daily-hud-title" id="dhud-title">DAILY CHALLENGE</span>
+  <span class="daily-hud-progress" id="dhud-progress">0 / 5</span>
+  <span class="daily-hud-darts" id="dhud-darts">15 darts left</span>
+</div>
