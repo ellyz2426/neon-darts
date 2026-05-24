@@ -1,0 +1,16 @@
+{"timestamp":"2026-05-24T12:00:00Z","event":"round4_continuation_start","files":51,"lines":7416,"templates":25}
+{"timestamp":"2026-05-24T12:10:00Z","event":"summary_updated","file":"latest-build-summary.md"}
+{"timestamp":"2026-05-24T12:15:00Z","event":"files_added","files":["dart-trail.ts","board-hit-effects.ts","warmup.ts","mode-leaderboard.ts","camera-shake.ts","dart-skins-v2.ts"],"templates_added":["warmup.uikitml","leaderboard-v2.uikitml"]}
+{"timestamp":"2026-05-24T12:20:00Z","event":"files_added","files":["throw-replay.ts","power-ups.ts"],"templates_added":["powerup.uikitml"]}
+{"timestamp":"2026-05-24T12:25:00Z","event":"commit","ref":"6c11057","message":"Round 4c: Dart trails, board hit effects, camera shake, warm-up, per-mode leaderboards, throw replay, power-ups, 5 premium skins"}
+{"timestamp":"2026-05-24T12:25:30Z","event":"deploy","target":"gh-pages","ref":"e714cbd"}
+{"timestamp":"2026-05-24T12:30:00Z","event":"files_added","files":["tutorial.ts","sound-visualizer.ts","object-pool.ts","achievements-v2.ts"],"templates_added":["tutorial.uikitml"]}
+{"timestamp":"2026-05-24T12:35:00Z","event":"commit","ref":"1db0c23","message":"Round 4d: Tutorial system, sound visualizer, object pool, achievements v2 (51 total)"}
+{"timestamp":"2026-05-24T12:40:00Z","event":"files_added","files":["training-drills.ts","commentator.ts"],"templates_added":["training.uikitml","drillhud.uikitml"]}
+{"timestamp":"2026-05-24T12:45:00Z","event":"commit","ref":"0e4214c","message":"Round 4e: Training drills (7 drills), commentator system"}
+{"timestamp":"2026-05-24T12:45:30Z","event":"deploy","target":"gh-pages","ref":"08a13fc"}
+{"timestamp":"2026-05-24T12:50:00Z","event":"files_added","files":["board-animator.ts","notifications.ts","scoring-highlights.ts"],"templates_added":["turnsummary.uikitml","notification.uikitml"]}
+{"timestamp":"2026-05-24T12:55:00Z","event":"commit","ref":"8e6ed6d","message":"Round 4f: Board animator, notifications, scoring highlights — 10k+ lines"}
+{"timestamp":"2026-05-24T12:55:30Z","event":"deploy","target":"gh-pages","ref":"f7305b7"}
+{"timestamp":"2026-05-24T12:58:00Z","event":"status_updated","files_total":75,"lines_total":10414,"templates_total":33,"build_minutes":285,"achievements":51}
+{"timestamp":"2026-05-24T13:00:00Z","event":"round4_continuation_complete","status":"waiting_continuation","files":75,"lines":10414,"templates":33}
